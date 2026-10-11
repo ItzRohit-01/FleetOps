@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps Administration Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c6c6cd",
+                    "surface-variant": "#e4e2e4",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f3f0f2",
+                    "secondary": "#505f76",
+                    "surface": "#fcf8fa",
+                    "on-background": "#1b1b1d",
+                    "secondary-container": "#d0e1fb",
+                    "on-secondary-container": "#54647a",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#fcdeb5",
+                    "tertiary-container": "#271901",
+                    "inverse-primary": "#bec6e0",
+                    "on-surface-variant": "#45464d",
+                    "tertiary": "#000000",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "surface-dim": "#dcd9db",
+                    "surface-container": "#f0edef",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#76777d",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-container": "#7c839b",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#1b1b1d",
+                    "surface-tint": "#565e74",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d3e4fe",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-tertiary-fixed": "#271901",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "on-tertiary-container": "#98805d",
+                    "on-error-container": "#93000a",
+                    "background": "#fcf8fa",
+                    "inverse-surface": "#303032",
+                    "surface-container-highest": "#e4e2e4",
+                    "on-secondary-fixed": "#0b1c30",
+                    "primary-container": "#131b2e",
+                    "primary": "#000000",
+                    "surface-container-low": "#f6f3f5",
+                    "surface-container-high": "#eae7e9",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-bright": "#fcf8fa",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px",
+                    "container-max": "1440px",
+                    "xs": "4px",
+                    "gutter": "24px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "base": "4px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcf8fa; color: #1b1b1d; }
+        .soft-lift { box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Sidebar Component -->
+<aside class="fixed h-full w-[280px] left-0 top-0 bg-white dark:bg-inverse-surface border-r border-outline-variant dark:border-outline shadow-sm z-50 flex flex-col py-lg px-md">
+<div class="mb-xl px-sm">
+<h1 class="font-display-lg text-display-lg font-bold text-primary dark:text-inverse-primary tracking-tight">TransitOps</h1>
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-widest mt-1">Enterprise Admin</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto no-scrollbar">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<!-- Fleet Management -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-body-md text-body-md">Fleet Management</span>
+</a>
+<!-- Driver Management -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md text-body-md">Driver Management</span>
+</a>
+<!-- Trip Operations -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">route</span>
+<span class="font-body-md text-body-md">Trip Operations</span>
+</a>
+<!-- Safety Center -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-body-md text-body-md">Safety Center</span>
+</a>
+<!-- Finance Center -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Finance Center</span>
+</a>
+<!-- AI Intelligence -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-secondary hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-body-md text-body-md">AI Intelligence</span>
+</a>
+<!-- Administration (Active) -->
+<a class="flex items-center gap-3 px-md py-sm rounded-lg text-primary dark:text-inverse-primary font-bold bg-surface-container dark:bg-primary-container border-r-4 border-primary dark:border-inverse-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings_applications</span>
+<span class="font-body-md text-body-md">Administration</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-3 px-sm">
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a senior administrator, middle-aged male with silver hair, wearing a navy blue blazer and a white shirt. The background is a blurred office environment with cool blue lighting, reflecting the premium enterprise SaaS aesthetic of TransitOps." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTYcVfFWXA4wbXXqxZgsn8hggruS2ksSwungPV9fxCDTqYhtGc10Pk7zSeZBXYP8Ys2SkvLMo-p9HuMi7LO447tNsnocPWw1L9gd5OlgrcarIBJW8LgApmYVIf75DlatTKbejwdFR6syiZZZfvFzgW5A-2lXxgWCcQqWWck7RMQlzhFNkaHj7y79XPmgRbYKnJ7mfRm58afYDY7uxqHHXjHl_1o8e7LJag2FLWJtC254aWwcpAgytF"/>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md text-on-background truncate">Marcus Thorne</p>
+<p class="text-label-sm font-label-sm text-secondary truncate">Super Admin</p>
+</div>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[280px] min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-md flex justify-between items-center h-16 px-xl border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-primary transition-all" placeholder="Search across administration..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md pr-md border-r border-outline-variant">
+<button class="relative text-secondary hover:text-primary transition-all p-1">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-secondary hover:text-primary transition-all p-1">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-on-background">Organization: TransitOps Global</span>
+<span class="material-symbols-outlined text-secondary">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-xl space-y-lg">
+<!-- Hero Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-background">Administration Center</h2>
+<p class="text-body-lg text-secondary max-w-2xl mt-2">Manage users, permissions, system settings, organizational configuration, and platform governance.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 border border-outline-variant rounded-lg text-secondary hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="px-4 py-2 border border-primary text-primary rounded-lg font-label-md text-label-md hover:bg-surface-container transition-all">
+                        Export Logs
+                    </button>
+<button class="px-4 py-2 bg-secondary text-white rounded-lg font-label-md text-label-md hover:opacity-90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add_moderator</span>
+                        Create Role
+                    </button>
+<button class="px-4 py-2 bg-primary text-white rounded-lg font-label-md text-label-md hover:opacity-90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                        Add User
+                    </button>
+</div>
+</section>
+<!-- KPI Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-gutter">
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Total Users</p>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md">1,240</span>
+<span class="text-label-sm text-emerald-600 flex items-center">+12% <span class="material-symbols-outlined text-[14px]">trending_up</span></span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Active Users</p>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md">1,182</span>
+<span class="text-label-sm text-secondary">95.3%</span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Roles</p>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md">12</span>
+<span class="text-label-sm text-secondary">Configured</span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant/30 border-l-4 border-l-amber-500">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Pending</p>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-amber-600">5</span>
+<span class="text-label-sm text-amber-600">Approvals</span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">System Health</p>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-emerald-600">99.9%</span>
+<span class="material-symbols-outlined text-emerald-600 text-[18px]">check_circle</span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant/30 border-l-4 border-l-error">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Security Alerts</p>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-error">2</span>
+<span class="text-label-sm text-error font-bold">Critical</span>
+</div>
+</div>
+</section>
+<!-- Main Workspace Grid (Bento Style) -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Column: User Management & Roles -->
+<div class="col-span-12 lg:col-span-8 space-y-lg">
+<!-- User Management Table -->
+<div class="bg-white rounded-xl soft-lift border border-outline-variant overflow-hidden">
+<div class="p-lg flex justify-between items-center border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm">User Management</h3>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-1 text-label-md font-label-md text-secondary hover:text-primary px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                                    Filter
+                                </button>
+<button class="flex items-center gap-1 text-label-md font-label-md text-secondary hover:text-primary px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    Export
+                                </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest text-label-md font-label-md text-secondary border-b border-outline-variant">
+<tr>
+<th class="px-lg py-md">User Name</th>
+<th class="px-lg py-md">Role</th>
+<th class="px-lg py-md">Department</th>
+<th class="px-lg py-md">Last Login</th>
+<th class="px-lg py-md">Status</th>
+<th class="px-lg py-md text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full" data-alt="A clean, minimalist profile picture of a young professional woman with dark hair tied back, wearing glasses and a light grey sweater. She has a friendly, professional expression. High-key studio lighting with a neutral, soft-shadowed white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcOf6wvnefthM7eUr5f8U_mdu-zPkeJyrcaT6W50Q3uvY-IUCH7o9A7gWcMQolO9wARqflPHB2NLnZeGwtWazOs7rhj0jUtXvW4ignvU9tadRaVeJ139aXlgUqEde9JttUD8WlZlPNDdrBI1omK-ZgqFPWP9h_2giYuUnljQTd9yM-UYWB_-b5MyWXg7pJU2N9NCKT1arYuN129xWTqV14PFPedd3vp2pSZHix9W8Gtjg8-Jdol0cM"/>
+<div>
+<p class="font-label-md text-label-md">Sarah Jenkins</p>
+<p class="text-label-sm text-secondary">s.jenkins@transitops.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="bg-primary-fixed text-on-primary-fixed text-label-sm font-label-sm px-2 py-0.5 rounded-full">Fleet Manager</span>
+</td>
+<td class="px-lg py-md text-body-md">Operations</td>
+<td class="px-lg py-md text-body-md">2 mins ago</td>
+<td class="px-lg py-md">
+<span class="bg-emerald-50 text-emerald-700 text-label-sm font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Active</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-secondary hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full" data-alt="Close-up portrait of a senior man with a beard and graying hair, wearing a professional dark polo shirt. The lighting is crisp and modern, with a bokeh-blurred office background that fits the TransitOps premium enterprise dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1dpklqLeREDl_QLMkIECK_Q9M4-2WlAKns-BySz86IPnHgUsVUrwxRSgrwap04WIQLqSXU6Jr1f4N07rh-WQLkunGAs5GRdoLbc3qMepCFNt0huRhBDtp6ZxgdbxcyZztktd8VLcvncgBbVOOLaotYRG7IUMkYqdAkqeSx4RikAFKOJiQqu3QJhZOK-cd6UC90BoHcyCofCIqXmVIgkR-x0yyXNyVRcSQhd6vcJV5lkPWpvfuWn6H"/>
+<div>
+<p class="font-label-md text-label-md">David Chen</p>
+<p class="text-label-sm text-secondary">d.chen@transitops.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="bg-surface-container-highest text-on-surface-variant text-label-sm font-label-sm px-2 py-0.5 rounded-full">Dispatcher</span>
+</td>
+<td class="px-lg py-md text-body-md">Logistics</td>
+<td class="px-lg py-md text-body-md">1 hour ago</td>
+<td class="px-lg py-md">
+<span class="bg-emerald-50 text-emerald-700 text-label-sm font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Active</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-secondary hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full" data-alt="Headshot of a modern professional woman with curly hair and a mustard yellow top, smiling warmly. The aesthetic is clean and professional, with bright, soft lighting that emphasizes a trustworthy enterprise SaaS atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3nBI-FOsImxvG3mgo6Kcj-L07Hg7bNVIY-12AAjFgEHLg-kX4tzamKxPvtlpxWJwxOg1oBDxFPvIbXBy9wScjK8hy5Hqk_Gbj7gEElUwebDeCDZMRtUQFQ8MbclcAXlTpPAuWwuN_GTN6mJHxj5F710bA4nlzrgGJ5GwhlBizFTzNynJpro-wFqb1LN89fkUR0n36hC6APRBnLh-5LIjUBulBrn-3OCmFVjTiSCnR1ED2jQAN_O9Y"/>
+<div>
+<p class="font-label-md text-label-md">Elena Rodriguez</p>
+<p class="text-label-sm text-secondary">e.rodriguez@transitops.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed text-label-sm font-label-sm px-2 py-0.5 rounded-full">Safety Officer</span>
+</td>
+<td class="px-lg py-md text-body-md">Risk Mgmt</td>
+<td class="px-lg py-md text-body-md">14 Oct, 09:30</td>
+<td class="px-lg py-md">
+<span class="bg-surface-container-high text-secondary text-label-sm font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Inactive</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-secondary hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md flex justify-center border-t border-outline-variant">
+<button class="text-label-md font-label-md text-primary hover:underline">View All Users (1,240)</button>
+</div>
+</div>
+<!-- Role Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-primary-fixed rounded-lg">
+<span class="material-symbols-outlined text-on-primary-fixed">manage_accounts</span>
+</div>
+<span class="text-label-sm text-secondary">42 Users</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm mb-sm">Fleet Manager</h4>
+<p class="text-body-md text-secondary mb-lg">Full access to vehicle telemetry, driver scheduling, and maintenance logs.</p>
+<div class="flex gap-2">
+<button class="flex-1 px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-label-md font-label-md hover:bg-surface-container transition-all">View Matrix</button>
+<button class="p-2 bg-surface-container-low border border-outline-variant rounded-lg text-secondary"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-secondary-fixed rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-fixed">route</span>
+</div>
+<span class="text-label-sm text-secondary">158 Users</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm mb-sm">Dispatcher</h4>
+<p class="text-body-md text-secondary mb-lg">Access to real-time routing, active trip monitoring, and driver communications.</p>
+<div class="flex gap-2">
+<button class="flex-1 px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-label-md font-label-md hover:bg-surface-container transition-all">View Matrix</button>
+<button class="p-2 bg-surface-container-low border border-outline-variant rounded-lg text-secondary"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: AI Insights & System Health -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- AI Governance Insights (Specialized Panel) -->
+<div class="bg-primary-container text-white p-lg rounded-xl soft-lift relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-md text-on-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-md text-label-md uppercase tracking-widest">AI Governance Insights</span>
+</div>
+<div class="space-y-4">
+<div class="p-md bg-white/10 rounded-lg border border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+<div class="flex justify-between mb-1">
+<span class="text-label-sm font-bold text-error-container">Critical Detection</span>
+<span class="text-label-sm text-white/60">88% Confidence</span>
+</div>
+<p class="text-body-md">Unusual login activity detected from unauthorized region (IP: 182.xx.xx.xx)</p>
+</div>
+<div class="p-md bg-white/10 rounded-lg border border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+<p class="text-label-sm font-bold text-tertiary-fixed mb-1">Policy Conflict</p>
+<p class="text-body-md">Permission conflict identified between Dispatcher and Fleet Manager roles for User: J. Doe.</p>
+</div>
+<div class="p-md bg-white/10 rounded-lg border border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+<p class="text-label-sm font-bold text-secondary-fixed mb-1">Clean-up Required</p>
+<p class="text-body-md">14 inactive accounts recommended for archival or review based on 90-day idle threshold.</p>
+</div>
+</div>
+<button class="mt-lg w-full py-2 bg-white text-primary-container rounded-lg font-label-md text-label-md hover:bg-opacity-90 transition-all">Launch Audit Protocol</button>
+</div>
+<!-- Decorative glow -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-secondary-fixed-dim rounded-full blur-[60px] opacity-20"></div>
+</div>
+<!-- System Health Dashboard -->
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm mb-lg">System Performance</h3>
+<div class="space-y-lg">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-body-md font-medium">Server Status</span>
+</div>
+<span class="text-label-sm text-secondary">Healthy</span>
+</div>
+<div>
+<div class="flex justify-between text-label-sm mb-2">
+<span class="text-secondary">Database Latency</span>
+<span class="font-bold">24ms</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[15%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-label-sm mb-2">
+<span class="text-secondary">Storage Capacity</span>
+<span class="font-bold">65% Full</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-amber-500 w-[65%]"></div>
+</div>
+</div>
+<div class="pt-md border-t border-outline-variant flex justify-between items-center">
+<span class="text-label-sm text-secondary">API Uptime (30d)</span>
+<span class="text-label-sm font-bold text-emerald-600">99.98%</span>
+</div>
+</div>
+</div>
+<!-- Security Center Recommendation -->
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant border-t-4 border-t-error">
+<div class="flex items-center gap-2 mb-md text-error">
+<span class="material-symbols-outlined">gpp_maybe</span>
+<h3 class="font-headline-sm text-headline-sm">Security Center</h3>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center p-sm bg-surface-container-low rounded-lg">
+<span class="text-label-md text-secondary">Failed Logins (24h)</span>
+<span class="text-label-md font-bold">18</span>
+</div>
+<div class="p-md bg-error-container/30 border border-error-container rounded-lg">
+<p class="text-label-sm font-bold text-on-error-container mb-1 uppercase tracking-tighter">Action Required</p>
+<p class="text-body-md text-on-error-container">Enable Multi-Factor Authentication (2FA) for all users with Administrative roles to mitigate credential theft.</p>
+<button class="mt-md text-label-md font-bold text-error hover:underline">Apply Now</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Sections: Audit Logs & Activity -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Audit Logs Table -->
+<div class="lg:col-span-2 bg-white rounded-xl soft-lift border border-outline-variant overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm">Audit Logs</h3>
+<div class="flex gap-2">
+<button class="p-1 text-secondary hover:text-primary"><span class="material-symbols-outlined">search</span></button>
+<button class="p-1 text-secondary hover:text-primary"><span class="material-symbols-outlined">filter_alt</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest text-label-sm font-label-sm text-secondary border-b border-outline-variant uppercase tracking-wider">
+<tr>
+<th class="px-lg py-md">Timestamp</th>
+<th class="px-lg py-md">User</th>
+<th class="px-lg py-md">Action</th>
+<th class="px-lg py-md">Module</th>
+<th class="px-lg py-md">Result</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-body-md">
+<tr>
+<td class="px-lg py-sm whitespace-nowrap">2023-10-24 14:22:10</td>
+<td class="px-lg py-sm font-medium">M. Thorne</td>
+<td class="px-lg py-sm">Modified Role [Dispatcher]</td>
+<td class="px-lg py-sm text-secondary">RBAC</td>
+<td class="px-lg py-sm"><span class="text-emerald-600 font-medium">Success</span></td>
+</tr>
+<tr>
+<td class="px-lg py-sm whitespace-nowrap">2023-10-24 14:15:05</td>
+<td class="px-lg py-sm font-medium">System</td>
+<td class="px-lg py-sm">Automated Backup</td>
+<td class="px-lg py-sm text-secondary">Infrastructure</td>
+<td class="px-lg py-sm"><span class="text-emerald-600 font-medium">Success</span></td>
+</tr>
+<tr>
+<td class="px-lg py-sm whitespace-nowrap">2023-10-24 13:58:22</td>
+<td class="px-lg py-sm font-medium">S. Jenkins</td>
+<td class="px-lg py-sm">User Password Reset</td>
+<td class="px-lg py-sm text-secondary">Auth</td>
+<td class="px-lg py-sm"><span class="text-emerald-600 font-medium">Success</span></td>
+</tr>
+<tr>
+<td class="px-lg py-sm whitespace-nowrap">2023-10-24 13:40:11</td>
+<td class="px-lg py-sm font-medium">External IP</td>
+<td class="px-lg py-sm">Failed Login Attempt</td>
+<td class="px-lg py-sm text-secondary">Security</td>
+<td class="px-lg py-sm"><span class="text-error font-medium">Denied</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md text-center border-t border-outline-variant">
+<button class="text-label-md font-label-md text-primary hover:underline">Download Detailed CSV Report</button>
+</div>
+</div>
+<!-- Recent Activity Timeline -->
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm mb-lg">Recent Activity</h3>
+<div class="relative space-y-lg before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container">
+<!-- Item 1 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white z-10">
+<span class="material-symbols-outlined text-[14px]">person_add</span>
+</div>
+<p class="text-label-md font-bold">New User Invited</p>
+<p class="text-body-md text-secondary">Marcus Thorne invited <strong>Julian Smith</strong> to the Logistics team.</p>
+<p class="text-label-sm text-secondary mt-1">10 minutes ago</p>
+</div>
+<!-- Item 2 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container z-10">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</div>
+<p class="text-label-md font-bold">System Configuration Updated</p>
+<p class="text-body-md text-secondary">API rate limits increased for external partner integrators.</p>
+<p class="text-label-sm text-secondary mt-1">2 hours ago</p>
+</div>
+<!-- Item 3 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-error-container flex items-center justify-center text-error z-10">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+</div>
+<p class="text-label-md font-bold text-error">Security Alert Triggered</p>
+<p class="text-body-md text-secondary">Multiple failed login attempts detected from IP: 192.168.1.45</p>
+<p class="text-label-sm text-secondary mt-1">4 hours ago</p>
+</div>
+<!-- Item 4 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant z-10">
+<span class="material-symbols-outlined text-[14px]">history</span>
+</div>
+<p class="text-label-md font-bold">Backup Completed</p>
+<p class="text-body-md text-secondary">Daily system-wide database backup successfully mirrored to AWS S3.</p>
+<p class="text-label-sm text-secondary mt-1">6 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+                button.classList.add('opacity-80');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+                button.classList.remove('opacity-80');
+            });
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('scale-95');
+                button.classList.remove('opacity-80');
+            });
+        });
+
+        // Simple mock search focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        if(searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('shadow-md');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('shadow-md');
+            });
+        }
+    </script>
+</body></html>

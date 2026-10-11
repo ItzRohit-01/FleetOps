@@ -1,0 +1,706 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Driver Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#000000",
+                    "on-primary-container": "#7c839b",
+                    "on-surface-variant": "#45464d",
+                    "tertiary-fixed": "#fcdeb5",
+                    "outline": "#76777d",
+                    "error-container": "#ffdad6",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#bec6e0",
+                    "on-surface": "#1b1b1d",
+                    "surface-container-low": "#f6f3f5",
+                    "secondary": "#505f76",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "inverse-on-surface": "#f3f0f2",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "surface-tint": "#565e74",
+                    "secondary-container": "#d0e1fb",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "surface-dim": "#dcd9db",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#98805d",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#e4e2e4",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary-fixed": "#0b1c30",
+                    "primary-container": "#131b2e",
+                    "background": "#fcf8fa",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#271901",
+                    "on-background": "#1b1b1d",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface-variant": "#e4e2e4",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-container": "#f0edef",
+                    "outline-variant": "#c6c6cd",
+                    "surface-container-high": "#eae7e9",
+                    "tertiary-container": "#271901",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "inverse-surface": "#303032",
+                    "tertiary": "#000000",
+                    "surface": "#fcf8fa",
+                    "on-secondary-container": "#54647a",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#fcf8fa"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "gutter": "24px",
+                    "container-max": "1440px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "display-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .soft-lift { shadow: 0px 4px 20px rgba(15, 23, 42, 0.05); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .custom-glass { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.8); }
+        .donut-segment { transition: stroke-dashoffset 1s ease-out; }
+    </style>
+<style id="nav-overlay-style">
+#nav-overlay-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: rgba(19,27,46,0.97);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px;
+  z-index: 99999;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  font-family: 'Inter', sans-serif;
+}
+#nav-overlay-bar::-webkit-scrollbar { height: 0; }
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: none;
+  margin-right: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+}
+.nav-brand span { font-size: 18px; }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.65);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.nav-link.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+.nav-link.disabled { opacity: 0.35; cursor: not-allowed; }
+.nav-link .mat-icon { font-family: 'Material Symbols Outlined'; font-size: 16px; font-style: normal; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20; }
+.nav-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); margin: 0 4px; flex-shrink: 0; }
+.nav-logout {
+  margin-left: auto;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.nav-logout:hover { background: rgba(186,26,26,0.25); color: #ff8a80; }
+body { padding-top: 52px !important; }
+</style></head>
+<body class="bg-background text-on-surface">
+<div id="nav-overlay-bar">
+  <a class="nav-brand" href="../index.html">
+    <span class="mat-icon">local_shipping</span>TransitOps
+  </a>
+  <div class="nav-sep"></div>
+  <a class='nav-link' href='dashboard.html'><span class='mat-icon'>dashboard</span>Dashboard</a>
+  <a class='nav-link' href='fleet.html'><span class='mat-icon'>directions_car</span>Fleet</a>
+  <a class='nav-link' href='drivers.html'><span class='mat-icon'>person</span>Drivers</a>
+  <a class='nav-link' href='trips1.html'><span class='mat-icon'>route</span>Trips (Live)</a>
+  <a class='nav-link' href='trips2.html'><span class='mat-icon'>map</span>Trips (Planning)</a>
+  <div class='nav-sep'></div>
+  <a class='nav-link' href='safety.html'><span class='mat-icon'>security</span>Safety</a>
+  <a class='nav-link' href='finance.html'><span class='mat-icon'>payments</span>Finance</a>
+  <div class='nav-sep'></div>
+  <a class='nav-link' href='ai.html'><span class='mat-icon'>psychology</span>AI Intelligence</a>
+  <a class='nav-link' href='admin.html'><span class='mat-icon'>settings</span>Administration</a>
+  <a class='nav-link disabled' title='Not yet added'><span class='mat-icon'>hub</span>Fleet Intelligence</a>
+  <a class="nav-logout" href="../index.html"><span class="mat-icon">logout</span>Logout</a>
+</div>
+<script>
+(function(){
+  // Mark active link based on current filename
+  var cur = window.location.pathname.split('/').pop();
+  document.querySelectorAll('#nav-overlay-bar .nav-link').forEach(function(a){
+    if(a.getAttribute('href') === cur) a.classList.add('active');
+  });
+})();
+</script>
+<!-- Side Navigation (Immutable Source) -->
+<aside class="fixed left-0 top-0 h-screen w-[280px] bg-surface dark:bg-surface-dim shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex flex-col h-full border-r border-outline-variant dark:border-outline z-50">
+<div class="px-xl py-lg flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" data-icon="terminal">terminal</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">TransitOps</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Fleet Command Center</p>
+</div>
+</div>
+<nav class="flex-1 mt-md px-md space-y-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors transition-all duration-200" href="dashboard.html"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> <span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="fleet.html"> <span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+<span class="font-body-md text-body-md">Fleet</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-high" href="drivers.html"> <span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-body-md text-body-md">Drivers</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="trips1.html"> <span class="material-symbols-outlined" data-icon="route">route</span>
+<span class="font-body-md text-body-md">Trips</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="safety.html"> <span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-body-md text-body-md">Safety</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="finance.html"> <span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md text-body-md">Finance</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="ai.html"> <span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-body-md text-body-md">AI Intelligence</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="admin.html"> <span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Administration</span>
+</a>
+</nav>
+<div class="p-lg mt-auto border-t border-outline-variant">
+<div class="bg-primary-container p-md rounded-xl text-white">
+<p class="font-label-md text-label-md opacity-70 mb-xs">Next Maintenance</p>
+<p class="font-body-md text-body-md font-bold">14 Vehicles Pending</p>
+<div class="w-full bg-white/20 h-1 rounded-full mt-sm">
+<div class="bg-white h-1 w-[65%] rounded-full"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top Navigation -->
+<header class="sticky top-0 w-full z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center px-lg py-md ml-[280px] w-[calc(100%-280px)]">
+<div class="flex items-center gap-lg">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant" data-icon="search">search</span>
+<input class="pl-10 pr-lg py-sm bg-surface-container border border-outline-variant rounded-full text-body-md w-[400px] focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Search drivers, vehicles, or trips..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-sm"></div>
+<div class="flex items-center gap-sm">
+<div class="text-right">
+<p class="font-label-md text-label-md font-bold">Marcus Chen</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Fleet Manager</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a middle-aged fleet manager with a calm and authoritative expression. He is wearing a minimalist charcoal polo shirt against a blurred office background with subtle blue and grey corporate colors. The lighting is soft and even, highlighting his professional and reliable character." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG3p6HPFkn-tBM3-xQ8spFWg3oHQRKcAkbmFN3ZnBjQeVw6wp0GtxmhW_e3lT3KnZBPY7NPhClDti3VSNef3CtkRTTv4m-ehvcmp9nPtg6SfqLSueknlnMkVTBLbyeWeXQdiIfc4v7a2XlMsdx4Vb1E6NX4rNVqlqlHFrukRCByHLq0IuVH7bEQBLGrKowPoUhDP59sB_Grw2bu_a5gyo-lhDdbFdYSShPbbVo4HBfDP6IWP80KQQF"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] p-lg space-y-lg">
+<!-- Header & Primary Actions -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary">Driver Management</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-xs">Manage driver profiles, availability, safety compliance, performance, and operational readiness.</p>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-sm px-md py-sm bg-surface border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span> Filter
+                </button>
+<button class="flex items-center gap-sm px-md py-sm bg-surface border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="file_download">file_download</span> Export
+                </button>
+<button class="flex items-center gap-sm px-md py-sm bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-lg hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="add">add</span> Add Driver
+                </button>
+</div>
+</div>
+<!-- KPI Row -->
+<div class="grid grid-cols-6 gap-md">
+<div class="bg-surface p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Total Drivers</p>
+<p class="font-headline-md text-headline-md text-primary">482</p>
+<div class="mt-sm flex items-center text-xs text-emerald-600 font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> +12% MoM
+                </div>
+</div>
+<div class="bg-surface p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Available</p>
+<p class="font-headline-md text-headline-md text-primary">128</p>
+<div class="mt-sm h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[26%]"></div>
+</div>
+</div>
+<div class="bg-surface p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">On Trip</p>
+<p class="font-headline-md text-headline-md text-primary">256</p>
+<div class="mt-sm h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="bg-blue-500 h-full w-[53%]"></div>
+</div>
+</div>
+<div class="bg-surface p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Suspended</p>
+<p class="font-headline-md text-headline-md text-error">12</p>
+<div class="mt-sm flex items-center text-xs text-error font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span> Requires Action
+                </div>
+</div>
+<div class="bg-surface p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Expiring Licenses</p>
+<p class="font-headline-md text-headline-md text-primary">8</p>
+<div class="mt-sm flex items-center text-xs text-amber-600 font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> Next 30 Days
+                </div>
+</div>
+<div class="bg-primary-container p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] text-white">
+<p class="font-label-md text-label-md opacity-70 mb-xs">Avg. Safety Score</p>
+<p class="font-headline-md text-headline-md">94%</p>
+<div class="mt-sm flex items-center text-xs text-emerald-400 font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="verified_user">verified_user</span> Fleet Excellence
+                </div>
+</div>
+</div>
+<!-- Middle Section: Visuals & Analytics -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Workforce Availability Donut -->
+<div class="col-span-4 bg-surface p-lg rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Workforce Availability</h3>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="relative w-48 h-48">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#F1F5F9" stroke-width="3"></circle>
+<!-- Available (Green) -->
+<circle class="donut-segment" cx="18" cy="18" fill="transparent" r="15.915" stroke="#10B981" stroke-dasharray="26 74" stroke-dashoffset="0" stroke-width="3"></circle>
+<!-- On Trip (Blue) -->
+<circle class="donut-segment" cx="18" cy="18" fill="transparent" r="15.915" stroke="#3B82F6" stroke-dasharray="53 47" stroke-dashoffset="-26" stroke-width="3"></circle>
+<!-- Off Duty (Gray) -->
+<circle class="donut-segment" cx="18" cy="18" fill="transparent" r="15.915" stroke="#94A3B8" stroke-dasharray="18 82" stroke-dashoffset="-79" stroke-width="3"></circle>
+<!-- Suspended (Red) -->
+<circle class="donut-segment" cx="18" cy="18" fill="transparent" r="15.915" stroke="#EF4444" stroke-dasharray="3 97" stroke-dashoffset="-97" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl font-bold">482</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-widest">Total</span>
+</div>
+</div>
+<div class="grid grid-cols-2 w-full mt-lg gap-sm">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+<span class="text-xs text-on-surface-variant font-medium">Available (128)</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-blue-500"></div>
+<span class="text-xs text-on-surface-variant font-medium">On Trip (256)</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-slate-400"></div>
+<span class="text-xs text-on-surface-variant font-medium">Off Duty (86)</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-red-500"></div>
+<span class="text-xs text-on-surface-variant font-medium">Suspended (12)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Driver Insights -->
+<div class="col-span-5 bg-gradient-to-br from-primary-container to-primary-container/90 p-lg rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.1)] text-white relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-tertiary-fixed" data-icon="psychology">psychology</span>
+<h3 class="font-headline-sm text-headline-sm">AI Insights &amp; Predictions</h3>
+</div>
+<div class="space-y-md">
+<div class="flex items-start gap-md p-md bg-white/10 rounded-lg hover:bg-white/15 transition-colors cursor-pointer border border-white/5">
+<div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-emerald-400 text-sm" data-icon="trending_up">trending_up</span>
+</div>
+<p class="font-body-md text-body-md">Driver <span class="font-bold">Alex Thompson</span> maintained a 98% safety score over 120 trips, qualifying for the quarterly bonus.</p>
+</div>
+<div class="flex items-start gap-md p-md bg-white/10 rounded-lg hover:bg-white/15 transition-colors cursor-pointer border border-white/5">
+<div class="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-amber-400 text-sm" data-icon="event_note">event_note</span>
+</div>
+<p class="font-body-md text-body-md">Driver <span class="font-bold">John Doe</span>'s Class A license expires in 14 days. Renewal paperwork is pending review.</p>
+</div>
+<div class="flex items-start gap-md p-md bg-white/10 rounded-lg hover:bg-white/15 transition-colors cursor-pointer border border-white/5">
+<div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-blue-400 text-sm" data-icon="star">star</span>
+</div>
+<p class="font-body-md text-body-md">Driver <span class="font-bold">Sarah Jenkins</span> has been flagged as the most fuel-efficient driver this month with 12% savings.</p>
+</div>
+</div>
+<button class="w-full mt-lg py-sm bg-white/10 hover:bg-white/20 rounded-lg text-sm font-bold transition-colors">View All Intelligence Reports</button>
+</div>
+<!-- Atmospheric glow -->
+<div class="absolute -bottom-20 -right-20 w-64 h-64 bg-secondary-fixed/20 rounded-full blur-3xl"></div>
+</div>
+<!-- Safety & Compliance Center -->
+<div class="col-span-3 bg-surface p-lg rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-lg">Compliance Center</h3>
+<div class="space-y-md">
+<div class="p-md bg-error-container/30 border border-error/10 rounded-lg">
+<div class="flex items-center justify-between mb-xs">
+<span class="font-label-md text-label-md text-error font-bold uppercase">Critical</span>
+<span class="text-xs text-on-surface-variant">2h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">4 Expired Licenses</p>
+<p class="text-xs text-on-surface-variant mt-xs">Operations halted for affected drivers.</p>
+</div>
+<div class="p-md bg-tertiary-fixed/30 border border-tertiary-fixed-dim rounded-lg">
+<div class="flex items-center justify-between mb-xs">
+<span class="font-label-md text-label-md text-on-tertiary-fixed-variant font-bold uppercase">Warning</span>
+<span class="text-xs text-on-surface-variant">5h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">Incident Reported: V-109</p>
+<p class="text-xs text-on-surface-variant mt-xs">Hard braking event detected by telematics.</p>
+</div>
+<div class="p-md bg-surface-container rounded-lg">
+<p class="font-body-md text-body-md text-on-surface font-semibold">Medical Review Pending</p>
+<p class="text-xs text-on-surface-variant mt-xs">12 drivers require biennial checkups.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Registry & Details -->
+<div class="grid grid-cols-12 gap-lg h-full">
+<!-- Driver Registry Table -->
+<div class="col-span-8 bg-surface rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm text-primary">Driver Registry</h3>
+<div class="flex gap-md">
+<span class="text-sm text-on-surface-variant font-medium">Showing 1-10 of 482</span>
+<div class="flex gap-xs">
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Driver Name</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">License ID</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Category</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Safety Score</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Assignment</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A detailed headshot of a professional truck driver named Alex Thompson. He is a man in his late 30s with short hair and a focused expression. He is wearing a blue TransitOps company jacket. The background is a crisp white fleet terminal at sunset, giving a professional yet heroic cinematic feel to the image." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiXNXn6A-FDkt9iTaLQ1_17HiOVt7hxKKtijp7z2435CoGqjCx1NCTfZqaCX61-FtOPB1h9Ej0QWIrD-zi3VBeD3q2htwgq4OzgR0LZqslM6x_B2LGy2kCyllp_20_O8ZawNIIjKcjBUaGhjvuqs0-xRFxLtknR9RfB0nCs8-X1X_7xGGpHY9fmhnVcaBbh_xekkH1a4SVKF-MgdchcN9mYb5OZtJiDzM8w7eDprFts7HI8u656MNM"/>
+<div>
+<p class="font-body-md text-body-md font-bold group-hover:text-primary transition-colors">Alex Thompson</p>
+<p class="text-xs text-on-surface-variant">ID: D-9021</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">TX-492-901</td>
+<td class="px-lg py-md"><span class="px-2 py-1 bg-surface-container rounded text-xs font-bold text-on-surface-variant">CLASS A</span></td>
+<td class="px-lg py-md w-32">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-primary">98%</span>
+<div class="w-full bg-surface-container-high h-1 rounded-full">
+<div class="bg-emerald-500 h-full w-[98%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">V-102 (Houston Exp)</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">On Trip</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A portrait of a seasoned driver named Sarah Jenkins. She has a confident smile and is wearing a high-visibility vest over a dark shirt. Her hair is tied back, and the setting is a modern fleet control center with glowing screens in the background. The lighting is premium and professional with cool blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDRr-PsRmTuzKpWeQtz4UKYDxK1gULkVxwoVOBA-IZCnPE16TkVujmJuuSdaLOP1yYJpsj-pbN7Su8d45G2pGT0khNPb3t5h6NzkzYPsbzJUM2FirDDT57lrF3uCR5vVycipf_qOHYAAaHWS6VsxnnOBE4ufWWm3aAOFO10HZoiaJABycbttr7aF-rjcFADVIE5vDrm122dXWnaW9ncjxrIIKc0YI6bJCecTT8iAqriydxpoTCRu3f"/>
+<div>
+<p class="font-body-md text-body-md font-bold">Sarah Jenkins</p>
+<p class="text-xs text-on-surface-variant">ID: D-8842</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">CA-112-452</td>
+<td class="px-lg py-md"><span class="px-2 py-1 bg-surface-container rounded text-xs font-bold text-on-surface-variant">CLASS B</span></td>
+<td class="px-lg py-md">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-primary">92%</span>
+<div class="w-full bg-surface-container-high h-1 rounded-full">
+<div class="bg-emerald-500 h-full w-[92%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">N/A</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Available</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a senior driver named Robert Blackwood. He is wearing a grey uniform with a name patch. He has a wise, experienced look. The background shows the side of a massive white logistics truck under clear daylight. High detail, high quality corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDXkicmCc5pLsHagO91VMqpy8I0wHA0u6B9UdPUvD-OZt1jOE9JtICaisKzr5CmloN-I32rl6Z2RGDQqvvyK32j3SUOqRQVOfjHAPK0pFM0CdLm5PitwdDwc9BrJXWo8xCmbk8tOKiQcyVzina4Kg8s4LOujB0vdbewOaB4k8_XOEW-nbYoEol6NVrZgXOx8idYv-4o9UY5JpMD3ZFe98PRvZS_e9pUKZ9BhRNT9cuDppbjLjh-UNd"/>
+<div>
+<p class="font-body-md text-body-md font-bold">Robert Blackwood</p>
+<p class="text-xs text-on-surface-variant">ID: D-7710</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">NY-891-220</td>
+<td class="px-lg py-md"><span class="px-2 py-1 bg-surface-container rounded text-xs font-bold text-on-surface-variant">CLASS A</span></td>
+<td class="px-lg py-md">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-primary">76%</span>
+<div class="w-full bg-surface-container-high h-1 rounded-full">
+<div class="bg-amber-500 h-full w-[76%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">V-405 (Maintenance)</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Off Duty</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A portrait of James Miller, a driver who has been suspended. He has a neutral expression, wearing a casual flannel shirt. The photo is a standard corporate badge style with flat lighting against a plain light grey wall. Sharp focus on facial details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcPl0sX3AOoq4VfQ9rnJllyCFsCYkVP36O-q8JRG08wkxV461oa2rkLUeoRu85avHf1ru-TaDgPlW6o80GQNs2dS4VgecmZ1sfvqNrJjjjuolGEF_olM4PRGfeB9rqyHOx1qHaB3XWd86lAZJtb0y1x96oizhGVw7mUzq3FUs4Il0HUo4w4EACphdh-umlsgqmX44jvZJv7ISHjaahSksNogpkCs1fHZUeMbE2iE-0kVJpD6FWGyeZ"/>
+<div>
+<p class="font-body-md text-body-md font-bold">James Miller</p>
+<p class="text-xs text-on-surface-variant">ID: D-1104</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">IL-230-009</td>
+<td class="px-lg py-md"><span class="px-2 py-1 bg-surface-container rounded text-xs font-bold text-on-surface-variant">CLASS C</span></td>
+<td class="px-lg py-md">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-primary">42%</span>
+<div class="w-full bg-surface-container-high h-1 rounded-full">
+<div class="bg-red-500 h-full w-[42%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md font-body-md text-body-md text-on-surface-variant">None</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">Suspended</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Driver Profile Preview (Side Panel) -->
+<div class="col-span-4 space-y-lg">
+<!-- Profile Panel -->
+<div class="bg-surface p-lg rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<div class="flex justify-between items-start mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Driver Profile</h3>
+<button class="text-primary hover:underline text-sm font-bold">View Detail</button>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="relative">
+<img class="w-24 h-24 rounded-full border-4 border-surface-container shadow-md object-cover" data-alt="A detailed headshot of Alex Thompson, a male truck driver in his late 30s. He has short brown hair and a confident, professional look. He is wearing a blue uniform shirt with the TransitOps logo clearly visible. The lighting is warm and cinematic, suggesting he is outdoors during a golden hour at a logistics hub." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO5arBs9GWnIIkozutilo9WdTJ0QNJtJfMXs1GvOVenPMHkJv2aGUMRGAB4QhvYhwLp6glENOGplWzxqbfpEtsVXFnj_W0VmBqCiPXVqgj8UU5mTuAOEUHi-Anrr9iPeQOffuGevRnadsdf9ADJLeFCOU7tfnVzrSOQJ8kMUnsevMdarHjWoypBii2h5UUat91l6TJWi4EtPUtdORFukjJUOL2cBu45U8rbiymmUnPvPpi_LNyrnUI"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-blue-500 border-2 border-white rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[12px]" data-icon="local_shipping">local_shipping</span>
+</div>
+</div>
+<h4 class="mt-md font-headline-sm text-headline-sm text-primary">Alex Thompson</h4>
+<p class="text-on-surface-variant text-sm">License: Class A (Interstate)</p>
+<div class="flex items-center gap-md mt-lg w-full">
+<div class="flex-1 p-md bg-surface-container rounded-lg">
+<p class="text-xs text-on-surface-variant mb-1">Status</p>
+<p class="font-bold text-blue-600">On Trip</p>
+</div>
+<div class="flex-1 p-md bg-surface-container rounded-lg">
+<p class="text-xs text-on-surface-variant mb-1">Vehicle</p>
+<p class="font-bold">V-102</p>
+</div>
+</div>
+</div>
+<div class="mt-lg space-y-md">
+<div>
+<div class="flex justify-between items-end mb-1">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Performance Score</p>
+<p class="font-bold text-emerald-600">98%</p>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[98%]"></div>
+</div>
+</div>
+<!-- Mini Performance Chart -->
+<div class="h-24 w-full flex items-end justify-between gap-1 mt-md">
+<div class="w-full bg-blue-100 rounded-t h-[60%]"></div>
+<div class="w-full bg-blue-200 rounded-t h-[75%]"></div>
+<div class="w-full bg-blue-300 rounded-t h-[65%]"></div>
+<div class="w-full bg-blue-400 rounded-t h-[90%]"></div>
+<div class="w-full bg-blue-500 rounded-t h-[80%]"></div>
+<div class="w-full bg-blue-600 rounded-t h-[95%]"></div>
+<div class="w-full bg-primary rounded-t h-[100%]"></div>
+</div>
+<p class="text-center text-xs text-on-surface-variant">Trip safety score trends (Last 7 days)</p>
+</div>
+</div>
+<!-- Recent Activity Timeline -->
+<div class="bg-surface p-lg rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-lg">Recent Activity</h3>
+<div class="space-y-lg relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container-high">
+<div class="relative flex gap-lg pl-lg">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-white rounded-full border-2 border-primary z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-primary" data-icon="route">route</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold">New Assignment</p>
+<p class="text-xs text-on-surface-variant">Alex Thompson assigned to Route Houston-Exp</p>
+<span class="text-[10px] text-on-surface-variant opacity-60">12 min ago</span>
+</div>
+</div>
+<div class="relative flex gap-lg pl-lg">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-white rounded-full border-2 border-emerald-500 z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-emerald-500" data-icon="verified">verified</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold">License Renewed</p>
+<p class="text-xs text-on-surface-variant">Marcus Miller successfully updated CA license</p>
+<span class="text-[10px] text-on-surface-variant opacity-60">2 hours ago</span>
+</div>
+</div>
+<div class="relative flex gap-lg pl-lg">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-white rounded-full border-2 border-amber-500 z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-amber-500" data-icon="notification_important">notification_important</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold">Compliance Alert</p>
+<p class="text-xs text-on-surface-variant">John Doe's medical certificate expiring in 5 days</p>
+<span class="text-[10px] text-on-surface-variant opacity-60">5 hours ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple hover interaction for table rows to show a "View" action
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                // Add highlight logic if needed
+            });
+        });
+
+        // Initialize donut chart with a slight animation delay
+        window.addEventListener('load', () => {
+            const segments = document.querySelectorAll('.donut-segment');
+            segments.forEach(seg => {
+                const dashArray = seg.getAttribute('stroke-dasharray');
+                seg.style.strokeDasharray = '0 100';
+                setTimeout(() => {
+                    seg.style.strokeDasharray = dashArray;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

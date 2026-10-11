@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Fleet Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .bento-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+            transition: transform 0.2s ease;
+        }
+        .status-pill {
+            @apply px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e4e2e4",
+                      "inverse-surface": "#303032",
+                      "primary": "#000000",
+                      "inverse-primary": "#bec6e0",
+                      "on-tertiary-container": "#98805d",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface-tint": "#565e74",
+                      "surface-container-low": "#f6f3f5",
+                      "background": "#fcf8fa",
+                      "tertiary-fixed-dim": "#dec29a",
+                      "surface-container-highest": "#e4e2e4",
+                      "on-tertiary-fixed-variant": "#574425",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#54647a",
+                      "on-primary-fixed": "#131b2e",
+                      "on-tertiary-fixed": "#271901",
+                      "outline": "#76777d",
+                      "surface": "#fcf8fa",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#7c839b",
+                      "secondary-container": "#d0e1fb",
+                      "primary-container": "#131b2e",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#1b1b1d",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#dae2fd",
+                      "tertiary-container": "#271901",
+                      "surface-bright": "#fcf8fa",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-surface-variant": "#45464d",
+                      "on-error-container": "#93000a",
+                      "on-error": "#ffffff",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-primary": "#ffffff",
+                      "surface-container": "#f0edef",
+                      "primary-fixed-dim": "#bec6e0",
+                      "surface-dim": "#dcd9db",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "inverse-on-surface": "#f3f0f2",
+                      "tertiary-fixed": "#fcdeb5",
+                      "tertiary": "#000000",
+                      "surface-container-high": "#eae7e9",
+                      "outline-variant": "#c6c6cd",
+                      "error": "#ba1a1a",
+                      "on-surface": "#1b1b1d",
+                      "secondary": "#505f76"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "gutter": "24px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "container-max": "1440px",
+                      "margin-mobile": "16px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Inter"],
+                      "display-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-screen w-[280px] bg-surface shadow-sm border-r border-outline-variant flex flex-col z-[60] hidden md:flex">
+<div class="px-lg py-xl flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-2xl">local_shipping</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">TransitOps</h1>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Fleet Command Center</p>
+</div>
+</div>
+<nav class="flex-1 px-4 mt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">directions_car</span>
+<span class="font-label-md text-label-md">Fleet</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Drivers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">route</span>
+<span class="font-label-md text-label-md">Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-label-md text-label-md">Safety</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Finance</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-md text-label-md">AI Intelligence</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Administration</span>
+</a>
+</nav>
+<div class="p-lg border-t border-outline-variant mt-auto">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full bg-surface-container-highest object-cover" data-alt="Close up professional headshot of a senior logistics manager with a confident expression, wearing a tailored navy blazer, soft office lighting, high-end photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaIuNH660nEgkE-NH8b-cOfm3X5K1AzKO7T_xZ9C9T26oiJrPqaBRv9HBJGNUWojY0opfEgoQRt2ifi_S3Hq7fX1jAsuPiTG0lOqGUZKsv9gEmFjQNaUxuVTlqYvbaBoPbVdctDrU37qFHYkkH3hkcaAjEzERw2AKlGi84L-8yJMAQlKCt0ah3u4QMZgpr2lyorWwjeVXYbJJNjv0GcYk6_7E46Ml7WabPUt9zh9SiP-Kt9hKm0LdD"/>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md font-bold truncate">Alex Sterling</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Fleet Director</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-[280px] min-h-screen relative">
+<!-- Top Nav Bar -->
+<header class="sticky top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center px-lg py-md h-16">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary" placeholder="Search vehicles, VIN, or drivers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">warning</span>
+</button>
+<button class="bg-primary text-white font-label-md text-label-md px-4 py-2 rounded-lg flex items-center gap-2">
+                    Quick Actions
+                    <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-lg space-y-lg">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface font-bold">Fleet Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage vehicle lifecycle, utilization, maintenance status, and fleet health.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 bg-white border border-outline-variant px-4 py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        Filter
+                    </button>
+<button class="flex items-center gap-2 bg-white border border-outline-variant px-4 py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+                        Export
+                    </button>
+<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Add Vehicle
+                    </button>
+</div>
+</div>
+<!-- KPI Row -->
+<div class="grid grid-cols-2 lg:grid-cols-6 gap-gutter">
+<div class="bento-card p-md border border-transparent hover:border-primary-container transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]">local_shipping</span>
+<span class="text-emerald-600 font-bold text-[11px] bg-emerald-50 px-1.5 py-0.5 rounded">+12</span>
+</div>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Total Vehicles</p>
+<h3 class="text-2xl font-extrabold text-on-surface">482</h3>
+</div>
+<div class="bento-card p-md border border-transparent">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]">check_circle</span>
+</div>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Available</p>
+<h3 class="text-2xl font-extrabold text-on-surface">96</h3>
+</div>
+<div class="bento-card p-md border border-transparent">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]">route</span>
+</div>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">On Trip</p>
+<h3 class="text-2xl font-extrabold text-on-surface">342</h3>
+</div>
+<div class="bento-card p-md border border-transparent">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]">build</span>
+</div>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">In Maintenance</p>
+<h3 class="text-2xl font-extrabold text-on-surface">34</h3>
+</div>
+<div class="bento-card p-md border border-transparent">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]">history</span>
+</div>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Retired</p>
+<h3 class="text-2xl font-extrabold text-on-surface">10</h3>
+</div>
+<div class="bento-card p-md border border-transparent bg-primary text-white">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-white/70 text-[24px]">analytics</span>
+<span class="text-white font-bold text-[11px] bg-white/20 px-1.5 py-0.5 rounded">82.4%</span>
+</div>
+<p class="text-[11px] font-bold text-white/70 uppercase tracking-wider">Fleet Util.</p>
+<h3 class="text-2xl font-extrabold text-white">Optimal</h3>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Fleet Status & AI Intelligence -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Donut Chart Card -->
+<div class="bento-card p-lg h-64 flex flex-col">
+<h4 class="font-label-md text-label-md font-bold uppercase tracking-widest text-on-surface-variant mb-4">Fleet Status Overview</h4>
+<div class="flex-1 flex items-center justify-center relative">
+<!-- Simple CSS Donut representation -->
+<div class="w-32 h-32 rounded-full border-[12px] border-slate-100 relative flex items-center justify-center">
+<div class="absolute inset-[-12px] rounded-full border-[12px] border-blue-500 border-t-emerald-500 border-l-amber-500 border-r-transparent rotate-45"></div>
+<div class="text-center">
+<span class="block font-extrabold text-xl">482</span>
+<span class="text-[9px] font-bold uppercase text-on-surface-variant">Total</span>
+</div>
+</div>
+<div class="ml-8 space-y-2">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-medium">Available (96)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-blue-500"></div>
+<span class="text-xs font-medium">On Trip (342)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-amber-500"></div>
+<span class="text-xs font-medium">In Shop (34)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Intelligence Panel -->
+<div class="bento-card p-lg bg-[#271901] border border-amber-900/20 text-white relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-20">
+<span class="material-symbols-outlined text-[120px] text-amber-500">psychology</span>
+</div>
+<h4 class="font-label-md text-label-md font-bold uppercase tracking-widest text-amber-400 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                            Maintenance Intelligence
+                        </h4>
+<div class="space-y-4 relative z-10">
+<div class="bg-white/5 p-3 rounded-lg border border-white/10">
+<p class="text-xs text-amber-100 font-medium">V-102 Predictive Alert</p>
+<p class="text-sm font-bold mt-1">Vehicle requires service within 320 km based on fuel efficiency degradation.</p>
+</div>
+<div class="bg-white/5 p-3 rounded-lg border border-white/10">
+<p class="text-xs text-amber-100 font-medium">Regional Cost Variance</p>
+<p class="text-sm font-bold mt-1">Maintenance cost increased 12% in Sector 7 due to parts scarcity.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Vehicle Registry -->
+<div class="col-span-12 lg:col-span-8">
+<div class="bento-card overflow-hidden h-full flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<h4 class="font-label-md text-label-md font-bold uppercase tracking-widest text-on-surface-variant">Vehicle Registry</h4>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container"><span class="material-symbols-outlined text-sm">search</span></button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container"><span class="material-symbols-outlined text-sm">settings</span></button>
+</div>
+</div>
+<div class="overflow-x-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-white z-10">
+<tr class="border-b border-outline-variant">
+<th class="px-lg py-4 text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Reg #</th>
+<th class="px-lg py-4 text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Vehicle Details</th>
+<th class="px-lg py-4 text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Capacity</th>
+<th class="px-lg py-4 text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Health</th>
+<th class="px-lg py-4 text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Status</th>
+<th class="px-lg py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+<td class="px-lg py-4">
+<span class="font-bold text-sm">V-102</span>
+</td>
+<td class="px-lg py-4">
+<div>
+<p class="font-bold text-sm">Freightliner M2</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Heavy Duty • Mark Evans</p>
+</div>
+</td>
+<td class="px-lg py-4 text-xs font-medium">26,000 lbs</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[92%]"></div>
+</div>
+<span class="text-[10px] font-bold">92%</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-100 text-blue-700">On Trip</span>
+</td>
+<td class="px-lg py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group cursor-pointer bg-surface-container-low/30">
+<td class="px-lg py-4">
+<span class="font-bold text-sm">V-089</span>
+</td>
+<td class="px-lg py-4">
+<div>
+<p class="font-bold text-sm">Ford F-550</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Medium Duty • Sarah Chen</p>
+</div>
+</td>
+<td class="px-lg py-4 text-xs font-medium">19,500 lbs</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[98%]"></div>
+</div>
+<span class="text-[10px] font-bold">98%</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-emerald-100 text-emerald-700">Available</span>
+</td>
+<td class="px-lg py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+<td class="px-lg py-4">
+<span class="font-bold text-sm">V-211</span>
+</td>
+<td class="px-lg py-4">
+<div>
+<p class="font-bold text-sm">Hino 268</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Heavy Duty • Unassigned</p>
+</div>
+</td>
+<td class="px-lg py-4 text-xs font-medium">25,950 lbs</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-amber-500 w-[64%]"></div>
+</div>
+<span class="text-[10px] font-bold">64%</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-100 text-amber-700">In Shop</span>
+</td>
+<td class="px-lg py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+<td class="px-lg py-4">
+<span class="font-bold text-sm">V-304</span>
+</td>
+<td class="px-lg py-4">
+<div>
+<p class="font-bold text-sm">Ram ProMaster</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Van • Jamie Lopez</p>
+</div>
+</td>
+<td class="px-lg py-4 text-xs font-medium">4,600 lbs</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[88%]"></div>
+</div>
+<span class="text-[10px] font-bold">88%</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-100 text-blue-700">On Trip</span>
+</td>
+<td class="px-lg py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+<td class="px-lg py-4">
+<span class="font-bold text-sm">V-012</span>
+</td>
+<td class="px-lg py-4">
+<div>
+<p class="font-bold text-sm">Peterbilt 579</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Heavy Duty • Dave Wright</p>
+</div>
+</td>
+<td class="px-lg py-4 text-xs font-medium">80,000 lbs</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-slate-400 w-[42%]"></div>
+</div>
+<span class="text-[10px] font-bold">42%</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-slate-100 text-slate-600">Retired</span>
+</td>
+<td class="px-lg py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Distribution & Detail Row -->
+<div class="grid grid-cols-12 gap-gutter pb-xl">
+<!-- Vehicle Type Distribution -->
+<div class="col-span-12 lg:col-span-4">
+<div class="bento-card p-lg h-full">
+<h4 class="font-label-md text-label-md font-bold uppercase tracking-widest text-on-surface-variant mb-6">Fleet Distribution</h4>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-lg">
+<span class="material-symbols-outlined text-slate-600">local_shipping</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold">Heavy Duty</span>
+<span class="text-xs font-bold">42%</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[42%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-lg">
+<span class="material-symbols-outlined text-slate-600">shutter_speed</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold">Medium Trucks</span>
+<span class="text-xs font-bold">28%</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[28%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-lg">
+<span class="material-symbols-outlined text-slate-600">airport_shuttle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold">Vans</span>
+<span class="text-xs font-bold">18%</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[18%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-lg">
+<span class="material-symbols-outlined text-slate-600">construction</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold">Service Vehicles</span>
+<span class="text-xs font-bold">12%</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[12%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="col-span-12 lg:col-span-4">
+<div class="bento-card p-lg h-full">
+<h4 class="font-label-md text-label-md font-bold uppercase tracking-widest text-on-surface-variant mb-6">Recent Activity</h4>
+<div class="relative space-y-6 after:content-[''] after:absolute after:left-[23px] after:top-8 after:bottom-4 after:w-px after:bg-slate-200">
+<div class="relative flex gap-4">
+<div class="z-10 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+<span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+</div>
+<div>
+<p class="text-sm font-bold">V-102 Assigned to Trip #8902</p>
+<p class="text-[11px] text-on-surface-variant">Mark Evans • 14 minutes ago</p>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="z-10 w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+<span class="material-symbols-outlined text-[20px]">build</span>
+</div>
+<div>
+<p class="text-sm font-bold">V-211 Moved to 'In Shop'</p>
+<p class="text-[11px] text-on-surface-variant">Maintenance Bay 4 • 2 hours ago</p>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="z-10 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+<span class="material-symbols-outlined text-[20px]">history</span>
+</div>
+<div>
+<p class="text-sm font-bold">V-089 Status Update: Available</p>
+<p class="text-[11px] text-on-surface-variant">Post-trip Inspection • 4 hours ago</p>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="z-10 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+<span class="material-symbols-outlined text-[20px]">update</span>
+</div>
+<div>
+<p class="text-sm font-bold">New Odometer Log: V-304</p>
+<p class="text-[11px] text-on-surface-variant">Current: 142,402 km • 6 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Preview Panel -->
+<div class="col-span-12 lg:col-span-4">
+<div class="bento-card bg-surface-container-highest/30 overflow-hidden h-full">
+<div class="p-lg bg-white/40 border-b border-outline-variant flex justify-between items-center">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-100 text-blue-700">Selected: V-102</span>
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white"><span class="material-symbols-outlined text-sm">open_in_new</span></button>
+</div>
+<div class="p-lg">
+<!-- Silhouette placeholder -->
+<div class="w-full h-40 bg-white rounded-xl mb-6 flex items-center justify-center overflow-hidden border border-slate-200">
+<img class="w-full h-full object-contain p-4 opacity-80" data-alt="A sleek minimalist 3D silhouette illustration of a modern Freightliner M2 heavy-duty truck. The vehicle is presented in a clean, isometric view against a soft gray studio background. Professional lighting creates subtle highlights on the cabin's metallic surfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc1vy3lVAp9EXK4bqSVk2d5dBEQzPml_3jDp2V1NDGaaTgLoyPL42b31f8NpsplKNPlM3hAGgl3IjCIt5KwvWnTkPDQjovUJehH1ODfvpjVJ01JX7m_8ceEhEYC1dfZ25lBzze5IVPZ0vm4SRbxou-3GId5hVJgCjblF8lIfUM-yfLI7htlYJ_JEpZco1wAgvSTXRpQr8n404lBam4-9qX0-NaCNZ1xapa0FQAext3XQlFaAXfycGC"/>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-white/60 p-3 rounded-lg border border-white">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Odometer</p>
+<p class="text-sm font-bold">248,310 km</p>
+</div>
+<div class="bg-white/60 p-3 rounded-lg border border-white">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Efficiency</p>
+<p class="text-sm font-bold">14.2 L/100km</p>
+</div>
+<div class="bg-white/60 p-3 rounded-lg border border-white">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Assignment</p>
+<p class="text-sm font-bold">Region West</p>
+</div>
+<div class="bg-white/60 p-3 rounded-lg border border-white">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Next Svc</p>
+<p class="text-sm font-bold">3,400 km</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+<div class="flex justify-between items-center mb-3">
+<p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Health Score</p>
+<span class="text-emerald-500 font-extrabold">92%</span>
+</div>
+<div class="relative h-4 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+<div class="absolute inset-y-0 left-0 bg-emerald-500 w-[92%]"></div>
+</div>
+<div class="flex justify-between text-[10px] font-medium text-on-surface-variant">
+<span>CRITICAL</span>
+<span>OPTIMAL</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav for Mobile -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant flex md:hidden z-50 px-4 py-2 justify-around">
+<a class="flex flex-col items-center p-2 text-primary" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold mt-1">Dash</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">directions_car</span>
+<span class="text-[10px] font-bold mt-1">Fleet</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">route</span>
+<span class="text-[10px] font-bold mt-1">Trips</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold mt-1">User</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions and effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', () => {
+                    // Update detail panel animation or logic could go here
+                    row.classList.add('bg-primary-container/10');
+                    setTimeout(() => row.classList.remove('bg-primary-container/10'), 300);
+                });
+            });
+
+            // Smooth entrance for bento cards
+            const cards = document.querySelectorAll('.bento-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.4s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        });
+    </script>
+</body></html>

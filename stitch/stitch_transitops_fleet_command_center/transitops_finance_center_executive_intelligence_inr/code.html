@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps Finance Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c6c6cd",
+                    "primary": "#000000",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "on-surface-variant": "#45464d",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-primary-container": "#7c839b",
+                    "inverse-primary": "#bec6e0",
+                    "on-secondary-container": "#54647a",
+                    "surface-tint": "#565e74",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-bright": "#fcf8fa",
+                    "surface-dim": "#dcd9db",
+                    "on-secondary-fixed": "#0b1c30",
+                    "surface": "#fcf8fa",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f6f3f5",
+                    "outline": "#76777d",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f3f0f2",
+                    "secondary-container": "#d0e1fb",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#303032",
+                    "tertiary-container": "#271901",
+                    "primary-container": "#131b2e",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "tertiary": "#000000",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "surface-container-highest": "#e4e2e4",
+                    "primary-fixed": "#dae2fd",
+                    "on-surface": "#1b1b1d",
+                    "tertiary-fixed": "#fcdeb5",
+                    "on-tertiary-fixed": "#271901",
+                    "on-tertiary-container": "#98805d",
+                    "background": "#fcf8fa",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "secondary": "#505f76",
+                    "on-background": "#1b1b1d",
+                    "surface-variant": "#e4e2e4",
+                    "surface-container-high": "#eae7e9",
+                    "surface-container": "#f0edef",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-primary": "#ffffff",
+                    "accent-purple": "#6b21a8",
+                    "accent-purple-container": "#f3e8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "container-max": "1440px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "gutter": "24px",
+                    "margin-desktop": "32px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .soft-lift { box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-surface dark:bg-surface-container-low border-r border-outline-variant flex flex-col z-50">
+<div class="p-lg flex items-center gap-md">
+<div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">directions_bus</span>
+</div>
+<div>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">TransitOps</h1>
+<p class="text-label-sm text-on-surface-variant">Enterprise Finance</p>
+</div>
+</div>
+<nav class="flex-1 px-md py-sm space-y-1 custom-scrollbar overflow-y-auto">
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">directions_bus</span>
+<span class="font-body-md text-body-md">Fleet</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md text-body-md">Drivers</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">route</span>
+<span class="font-body-md text-body-md">Trips</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">security</span>
+<span class="font-body-md text-body-md">Safety</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold cursor-pointer">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Finance</span>
+</div>
+</nav>
+<div class="p-md bg-accent-purple-container mx-md mb-lg rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-accent-purple">bolt</span>
+<span class="text-label-md text-accent-purple">AI Insights</span>
+</div>
+<span class="material-symbols-outlined text-accent-purple text-sm">arrow_forward_ios</span>
+</div>
+<div class="px-md pb-lg border-t border-outline-variant pt-md">
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[280px] min-h-screen">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-40 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-lg">
+<div class="flex items-center gap-lg">
+<h2 class="font-headline-sm text-headline-sm font-bold text-primary">Finance Center</h2>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:ring-1 focus:ring-primary focus:outline-none transition-all" placeholder="Search financials..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-sm"></div>
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container-low p-1.5 rounded-lg transition-all">
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a corporate executive in a dark tailored suit, high-end photography with soft studio lighting and a clean neutral background, expressing confidence and leadership for a premium financial dashboard interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFsv9ftGcD2wra1XoCIjjBl7A4xPedv6VEp7Uplvg5FWcqNsRJ3dObBzego0t_pF1_umRrhZWkg18wM474V9iGSS47QbEbzLqXcDVzbdxx4_7WauS5toZhjtO3E-Xx2ANgXiqIZfFrGyygBXz78_pfjiKU90rMhU_IoqTJOVVYjXpD5lvt5WHLsHRWcttIbR1ao9YrJuIKn6GrhOu3D7Xkr7fbKeTqiaIAfTiNexNGVP3qD9bGaKSH"/>
+<span class="text-label-md text-on-surface font-semibold">Executive Admin</span>
+</div>
+</div>
+</header>
+<div class="p-lg max-w-container-max mx-auto space-y-lg">
+<!-- Page Header Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Financial Oversight</h3>
+<p class="text-body-md text-on-surface-variant max-w-2xl">Monitor revenue, expenses, profitability, operational costs, fleet ROI, and financial performance across transport operations.</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-xs px-md py-sm border border-outline-variant rounded-lg text-label-md font-semibold hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-base">download</span> Download CSV
+                    </button>
+<button class="flex items-center gap-xs px-md py-sm border border-outline-variant rounded-lg text-label-md font-semibold hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-base">summarize</span> Generate Summary
+                    </button>
+<button class="flex items-center gap-xs px-md py-sm bg-primary text-white rounded-lg text-label-md font-semibold hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-base">ios_share</span> Export Report
+                    </button>
+</div>
+</div>
+<!-- Financial Overview KPIs -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-md">
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<p class="text-label-md text-on-surface-variant mb-xs">Total Revenue</p>
+<div class="flex items-baseline gap-xs">
+<h4 class="text-headline-sm font-bold">₹4.2M</h4>
+<span class="text-green-600 text-[10px] flex items-center font-bold">
+<span class="material-symbols-outlined text-xs">trending_up</span> 12%
+                        </span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<p class="text-label-md text-on-surface-variant mb-xs">Total Expenses</p>
+<div class="flex items-baseline gap-xs">
+<h4 class="text-headline-sm font-bold">₹2.8M</h4>
+<span class="text-green-600 text-[10px] flex items-center font-bold">
+<span class="material-symbols-outlined text-xs">trending_down</span> 4%
+                        </span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<p class="text-label-md text-on-surface-variant mb-xs">Net Profit</p>
+<div class="flex items-baseline gap-xs">
+<h4 class="text-headline-sm font-bold">₹1.4M</h4>
+<span class="text-green-600 text-[10px] flex items-center font-bold">
+<span class="material-symbols-outlined text-xs">trending_up</span> 18%
+                        </span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<p class="text-label-md text-on-surface-variant mb-xs">Fleet ROI</p>
+<div class="flex items-baseline gap-xs">
+<h4 class="text-headline-sm font-bold">18%</h4>
+<span class="text-green-600 text-[10px] flex items-center font-bold">
+<span class="material-symbols-outlined text-xs">trending_up</span> 2.1%
+                        </span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<p class="text-label-md text-on-surface-variant mb-xs">Cost/KM</p>
+<div class="flex items-baseline gap-xs">
+<h4 class="text-headline-sm font-bold">₹1.12</h4>
+<span class="text-green-600 text-[10px] flex items-center font-bold">
+<span class="material-symbols-outlined text-xs">trending_down</span> 0.05
+                        </span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl soft-lift border border-outline-variant">
+<p class="text-label-md text-on-surface-variant mb-xs">Fuel Spend</p>
+<div class="flex items-baseline gap-xs">
+<h4 class="text-headline-sm font-bold">₹840k</h4>
+<span class="text-green-600 text-[10px] flex items-center font-bold">
+<span class="material-symbols-outlined text-xs">trending_down</span> 1.5%
+                        </span>
+</div>
+</div>
+</div>
+<!-- Health Overview & Expense Breakdown -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Trend Line Chart Container -->
+<div class="lg:col-span-8 bg-white p-lg rounded-xl soft-lift border border-outline-variant h-[400px] flex flex-col">
+<div class="flex justify-between items-center mb-lg">
+<h5 class="text-body-lg font-bold">Financial Health Overview</h5>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-label-sm text-on-surface-variant">Revenue</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-outline"></span>
+<span class="text-label-sm text-on-surface-variant">Expenses</span>
+</div>
+</div>
+</div>
+<div class="flex-1 relative">
+<!-- Simulated Chart Grid -->
+<div class="absolute inset-0 border-b border-l border-outline-variant flex flex-col justify-between">
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+</div>
+<!-- Placeholder for Data Visualization (Illustration) -->
+<div class="absolute inset-0 flex items-end px-md gap-lg">
+<div class="flex-1 bg-primary/10 h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/15 h-[75%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[50%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/25 h-[90%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-[85%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-[95%] rounded-t-sm"></div>
+</div>
+</div>
+<div class="mt-md flex justify-between px-md text-label-sm text-on-surface-variant">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+</div>
+</div>
+<!-- Expense Breakdown Donut -->
+<div class="lg:col-span-4 bg-white p-lg rounded-xl soft-lift border border-outline-variant flex flex-col">
+<h5 class="text-body-lg font-bold mb-lg">Expense Breakdown</h5>
+<div class="flex-1 flex flex-col justify-center items-center">
+<div class="relative w-48 h-48 rounded-full border-[16px] border-primary flex items-center justify-center">
+<div class="text-center">
+<span class="text-headline-sm font-bold">₹2.8M</span>
+<p class="text-label-sm text-on-surface-variant">Total Spend</p>
+</div>
+</div>
+<div class="mt-lg w-full space-y-sm">
+<div class="flex justify-between text-body-md">
+<span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-primary"></span> Fuel</span>
+<span class="font-bold">35%</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-slate-600"></span> Maintenance</span>
+<span class="font-bold">25%</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Repairs</span>
+<span class="font-bold">15%</span>
+</div>
+<div class="flex justify-between text-body-md">
+<span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-slate-200"></span> Other</span>
+<span class="font-bold">25%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Financial Intelligence (Purple style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="bg-accent-purple text-white p-lg rounded-xl flex items-center gap-md">
+<div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<p class="text-body-md font-semibold">Fuel expenses increased 12% on Route B</p>
+<p class="text-label-sm opacity-80">AI Insight • Detected 2h ago</p>
+</div>
+</div>
+<div class="bg-white border-2 border-accent-purple/30 p-lg rounded-xl flex items-center gap-md">
+<div class="w-12 h-12 bg-accent-purple/10 rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-accent-purple">trending_down</span>
+</div>
+<div>
+<p class="text-body-md font-semibold text-on-surface">Vehicle V-102 ROI declining</p>
+<p class="text-label-sm text-on-surface-variant">Maintenance suggested to improve fuel efficiency</p>
+</div>
+</div>
+<div class="bg-accent-purple-container p-lg rounded-xl flex items-center gap-md border border-accent-purple/20">
+<div class="w-12 h-12 bg-accent-purple rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white">analytics</span>
+</div>
+<div>
+<p class="text-body-md font-semibold text-accent-purple">Forecast: Upcoming maintenance costs</p>
+<p class="text-label-sm text-accent-purple/80">Expected to rise by 8% next quarter</p>
+</div>
+</div>
+</div>
+<!-- Vehicle Profitability Table -->
+<section class="bg-white rounded-xl border border-outline-variant soft-lift overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h5 class="text-body-lg font-bold">Vehicle Profitability Analysis</h5>
+<button class="text-primary font-semibold text-label-md flex items-center gap-xs">View Full Fleet <span class="material-symbols-outlined text-sm">open_in_new</span></button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-label-md text-on-surface-variant font-bold uppercase tracking-wider">
+<tr>
+<th class="px-lg py-md">Vehicle</th>
+<th class="px-lg py-md">Revenue</th>
+<th class="px-lg py-md">Cost</th>
+<th class="px-lg py-md">Profit</th>
+<th class="px-lg py-md">ROI</th>
+<th class="px-lg py-md text-right">Action</th>
+</tr>
+</thead>
+<tbody class="text-body-md divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors bg-green-50/30">
+<td class="px-lg py-md font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-green-600">local_shipping</span> V-204 (Tractor-Trailer)
+                                </td>
+<td class="px-lg py-md">₹142,000</td>
+<td class="px-lg py-md">₹94,000</td>
+<td class="px-lg py-md font-bold text-green-700">+₹48,000</td>
+<td class="px-lg py-md">
+<span class="px-sm py-xs bg-green-100 text-green-700 rounded-full text-label-sm font-bold">33.8% (Highest)</span>
+</td>
+<td class="px-lg py-md text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-slate-500">local_shipping</span> V-102 (Cargo Van)
+                                </td>
+<td class="px-lg py-md">₹86,000</td>
+<td class="px-lg py-md">₹61,000</td>
+<td class="px-lg py-md font-bold">+₹25,000</td>
+<td class="px-lg py-md">29.0%</td>
+<td class="px-lg py-md text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-slate-500">local_shipping</span> V-305 (Box Truck)
+                                </td>
+<td class="px-lg py-md">₹112,000</td>
+<td class="px-lg py-md">₹88,000</td>
+<td class="px-lg py-md font-bold">+₹24,000</td>
+<td class="px-lg py-md">21.4%</td>
+<td class="px-lg py-md text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors bg-red-50/30">
+<td class="px-lg py-md font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-red-600">local_shipping</span> V-112 (Delivery Van)
+                                </td>
+<td class="px-lg py-md">₹42,000</td>
+<td class="px-lg py-md">₹39,500</td>
+<td class="px-lg py-md font-bold text-red-700">+₹2,500</td>
+<td class="px-lg py-md">
+<span class="px-sm py-xs bg-red-100 text-red-700 rounded-full text-label-sm font-bold">6.3% (Lowest)</span>
+</td>
+<td class="px-lg py-md text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Fuel & Maintenance Analytics -->
+<div class="lg:col-span-2 space-y-md">
+<h5 class="text-body-lg font-bold">Fuel &amp; Maintenance Analytics</h5>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-white p-lg rounded-xl border border-outline-variant soft-lift">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">ev_station</span>
+<span class="text-body-md font-bold">Average Efficiency</span>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-end">
+<span class="text-display-lg font-display-lg">8.4</span>
+<span class="text-label-md text-on-surface-variant pb-1">MPG Avg</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%]"></div>
+</div>
+<p class="text-label-sm text-on-surface-variant">+0.5 MPG from last month</p>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl border border-outline-variant soft-lift">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">build</span>
+<span class="text-body-md font-bold">Maintenance Trend</span>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-end">
+<span class="text-display-lg font-display-lg text-red-600">₹12.4k</span>
+<span class="text-label-md text-on-surface-variant pb-1">This Month</span>
+</div>
+<div class="flex gap-1 h-8 items-end">
+<div class="flex-1 bg-slate-200 h-1/2"></div>
+<div class="flex-1 bg-slate-200 h-2/3"></div>
+<div class="flex-1 bg-slate-200 h-1/2"></div>
+<div class="flex-1 bg-primary h-full"></div>
+</div>
+<p class="text-label-sm text-on-surface-variant">Scheduled maintenance peaking soon</p>
+</div>
+</div>
+</div>
+<!-- Recent Activity Timeline -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant soft-lift">
+<h5 class="text-body-md font-bold mb-lg">Recent Activity</h5>
+<div class="space-y-lg relative before:content-[''] before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant">
+<div class="relative pl-8">
+<div class="absolute left-1 top-1 w-4 h-4 bg-primary rounded-full border-4 border-white shadow-sm"></div>
+<div class="flex justify-between items-start">
+<div>
+<p class="text-body-md font-bold">Revenue Milestone Achieved</p>
+<p class="text-label-sm text-on-surface-variant">Q2 target surpassed by 15% across all regions.</p>
+</div>
+<span class="text-label-sm text-outline shrink-0">12m ago</span>
+</div>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-1 top-1 w-4 h-4 bg-accent-purple rounded-full border-4 border-white shadow-sm"></div>
+<div class="flex justify-between items-start">
+<div>
+<p class="text-body-md font-bold">Large Fuel Expense Recorded</p>
+<p class="text-label-sm text-on-surface-variant">Bulk refueling invoice (₹24k) processed for North Fleet.</p>
+</div>
+<span class="text-label-sm text-outline shrink-0">2h ago</span>
+</div>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-1 top-1 w-4 h-4 bg-outline rounded-full border-4 border-white shadow-sm"></div>
+<div class="flex justify-between items-start">
+<div>
+<p class="text-body-md font-bold">Maintenance Audit Logged</p>
+<p class="text-label-sm text-on-surface-variant">Completed financial audit for Vehicle Repairs category.</p>
+</div>
+<span class="text-label-sm text-outline shrink-0">1d ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Financial Forecasting -->
+<div class="space-y-md">
+<h5 class="text-body-lg font-bold">Predictive Forecasts</h5>
+<div class="bg-white p-lg rounded-xl border border-outline-variant soft-lift space-y-lg">
+<div class="p-md bg-surface-container-low rounded-lg">
+<p class="text-label-md text-on-surface-variant mb-xs">Next Month Revenue (Est.)</p>
+<div class="flex justify-between items-center">
+<h6 class="text-headline-sm font-bold text-primary">₹4.52M</h6>
+<span class="material-symbols-outlined text-green-600">trending_up</span>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-sm">92% Confidence score</p>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg">
+<p class="text-label-md text-on-surface-variant mb-xs">Next Month Expense (Est.)</p>
+<div class="flex justify-between items-center">
+<h6 class="text-headline-sm font-bold text-primary">₹2.94M</h6>
+<span class="material-symbols-outlined text-red-600">trending_up</span>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-sm">Based on projected fuel costs</p>
+</div>
+<div class="p-md bg-primary-container text-white rounded-lg">
+<p class="text-label-md text-on-primary-container mb-xs">Projected Net Profit</p>
+<div class="flex justify-between items-center">
+<h6 class="text-headline-sm font-bold">₹1.58M</h6>
+<span class="material-symbols-outlined text-green-400">auto_awesome</span>
+</div>
+<p class="text-[10px] text-on-primary-container mt-sm">+11.4% growth predicted</p>
+</div>
+<div class="pt-md">
+<button class="w-full py-sm bg-surface-container-high rounded-lg text-label-md font-bold hover:bg-surface-variant transition-all">
+                                Run Sensitivity Analysis
+                            </button>
+</div>
+</div>
+<!-- Decorative Asset -->
+<div class="relative h-48 rounded-xl overflow-hidden soft-lift border border-outline-variant">
+<div class="bg-cover bg-center w-full h-full" data-alt="A futuristic digital conceptual art of flowing financial data streams, featuring translucent blue and purple light particles against a dark navy background, representing high-speed transaction processing and enterprise-level financial intelligence in a high-tech corporate style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCGPKWKfdTAcERD2-w6PeUEgewG7c2oI8f3EXo7AT4Vkl-pJhPBsVXT9BvYMf1N3sjedLI06guUKmtdGxMoNWTN4_ujfWCUHJ0tCnyPlwinQXj6m7SQC0-pbWtiHr1eP4D3MQUfzE_w3UDxaH4jBN8j8_3oRQP20plWrexXdUKWH_kdHHlmzXg_XVJ901k8Q-TBOzckIGjVfbGaIz0YLUDVczf-hkDtGBMiD-V-GGVOGI5hMs6MjRIg')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-lg">
+<p class="text-white text-body-md font-semibold">Strategic Planning Tools Available in Settings</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB Suppression: Not rendered on dashboard/financial details screens for focus -->
+</body></html>
