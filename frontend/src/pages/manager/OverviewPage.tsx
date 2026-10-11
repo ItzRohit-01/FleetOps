@@ -31,11 +31,7 @@ export default function OverviewPage() {
 
   return (
     <div className="max-w-[1400px]">
-      {/* Demo banner */}
-      <div className="flex items-center gap-3 bg-accent-ai/10 border border-accent-ai/20 rounded-xl px-4 py-2.5 mb-5 text-xs text-accent-ai font-medium">
-        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>info</span>
-        Demo environment — displaying simulated fleet data for Oct 11, 2026. No live backend connected.
-      </div>
+
 
       {/* KPI cards */}
       <KpiGrid cols={4}>
@@ -73,7 +69,7 @@ export default function OverviewPage() {
           icon="report_problem"
           iconColor="text-danger"
           iconBg="bg-danger/10"
-          subValue={`${unassigned} unassigned, ${openIncidents} incidents`}
+          subValue={`${exceptions} total`}
           trend={{ value: '2 new', positive: false }}
         />
       </KpiGrid>
@@ -82,7 +78,7 @@ export default function OverviewPage() {
       <PageGrid className="mb-4">
         <ChartContainer
           title="Fleet Status"
-          subtitle="Vehicle distribution by operational status"
+
           height={220}
         >
           <FleetStatusChart />
@@ -90,7 +86,7 @@ export default function OverviewPage() {
 
         <ChartContainer
           title="On-Time Delivery Rate"
-          subtitle="14-day rolling performance — 89% target line shown"
+
           height={220}
         >
           <PerformanceTrendChart />
@@ -101,7 +97,7 @@ export default function OverviewPage() {
       <PageGrid className="mb-4">
         <SectionCard
           title="Operational Exceptions"
-          subtitle={`${exceptions} items requiring attention`}
+
           noPad
           action={
             <span className="text-xs font-bold text-danger bg-danger/10 px-2 py-0.5 rounded-full">{exceptions}</span>
@@ -133,7 +129,7 @@ export default function OverviewPage() {
 
         <SectionCard
           title="Recent AI Decisions"
-          subtitle="Dispatch recommendations from the AI engine"
+
           noPad
           action={
             <span className="text-[10px] font-bold bg-accent-ai/10 text-accent-ai px-2 py-0.5 rounded-full">DEMO</span>
