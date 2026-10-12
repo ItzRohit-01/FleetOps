@@ -1,25 +1,19 @@
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer
 } from 'recharts'
 import { fleetSummary } from '../../data/mockData'
-
-const STATUS_DATA = [
-  { name: 'On Trip',     value: fleetSummary.onTrip,     color: '#0ea5e9' },
-  { name: 'Available',   value: fleetSummary.available,  color: '#10b981' },
-  { name: 'Assigned',    value: fleetSummary.assigned,   color: '#f59e0b' },
-  { name: 'Maintenance', value: fleetSummary.maintenance, color: '#f97316' },
-  { name: 'Offline',     value: fleetSummary.offline,    color: '#94a3b8' },
-]
+import { useAppStore } from '../../store/useAppStore'
 
 interface CustomTooltipProps {
   active?: boolean
   payload?: { name: string; value: number; payload: { color: string } }[]
+  total?: number
 }
 
-function CustomTooltip({ active, payload }: CustomTooltipProps) {
+function CustomTooltip({ active, payload, total = 48 }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
   const d = payload[0]
-  const pct = Math.round((d.value / fleetSummary.total) * 100)
+  const pct = total > 0 ? Math.round((d.value / total) * 100) : 0
   return (
     <div className="bg-white border border-outline-variant rounded-lg px-3 py-2 shadow-lg text-xs">
       <div className="flex items-center gap-2 font-semibold text-on-surface">
@@ -32,12 +26,30 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 }
 
 export default function FleetStatusChart() {
+  const storeVehicles = useAppStore(s => s.vehicles)
+
+  const onTrip = storeVehicles.filter(v => v.status === 'on-trip').length || fleetSummary.onTrip
+  const available = storeVehicles.filter(v => v.status === 'available').length || fleetSummary.available
+  const assigned = storeVehicles.filter(v => v.status === 'assigned').length || fleetSummary.assigned
+  const maintenance = storeVehicles.filter(v => v.status === 'maintenance').length || fleetSummary.maintenance
+  const offline = storeVehicles.filter(v => v.status === 'offline').length || fleetSummary.offline
+
+  const total = storeVehicles.length || fleetSummary.total
+
+  const statusData = [
+    { name: 'On Trip',     value: onTrip,     color: '#0ea5e9' },
+    { name: 'Available',   value: available,  color: '#10b981' },
+    { name: 'Assigned',    value: assigned,   color: '#f59e0b' },
+    { name: 'Maintenance', value: maintenance, color: '#f97316' },
+    { name: 'Offline',     value: offline,    color: '#94a3b8' },
+  ]
+
   return (
     <div className="h-full flex items-center">
       <ResponsiveContainer width="60%" height="100%">
         <PieChart>
           <Pie
-            data={STATUS_DATA}
+            data={statusData}
             cx="50%"
             cy="50%"
             innerRadius="55%"
@@ -45,19 +57,18 @@ export default function FleetStatusChart() {
             paddingAngle={2}
             dataKey="value"
           >
-            {STATUS_DATA.map(entry => (
+            {statusData.map(entry => (
               <Cell key={entry.name} fill={entry.color} strokeWidth={0} />
             ))}
           </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          {/* Center label */}
+          <Tooltip content={<CustomTooltip total={total} />} />
         </PieChart>
       </ResponsiveContainer>
 
       {/* Legend */}
       <div className="flex-1 space-y-2 pl-2">
-        {STATUS_DATA.map(d => {
-          const pct = Math.round((d.value / fleetSummary.total) * 100)
+        {statusData.map(d => {
+          const pct = total > 0 ? Math.round((d.value / total) * 100) : 0
           return (
             <div key={d.name} className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
@@ -74,7 +85,7 @@ export default function FleetStatusChart() {
         <div className="pt-2 mt-2 border-t border-outline-variant/30">
           <div className="flex justify-between text-xs">
             <span className="font-semibold text-on-surface-variant">Total Fleet</span>
-            <span className="font-bold text-on-surface">{fleetSummary.total}</span>
+            <span className="font-bold text-on-surface">{total}</span>
           </div>
         </div>
       </div>

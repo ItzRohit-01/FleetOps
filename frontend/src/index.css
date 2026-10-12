@@ -110,26 +110,58 @@ body {
 
 /* ── Animations ───────────────────────────────────────────────── */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(-12px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 @keyframes skeleton-shimmer {
   0%   { background-position: -400px 0; }
   100% { background-position: 400px 0; }
 }
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes radar-pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 0.2; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
 
-.animate-fade-in   { animation: fade-in 0.25s ease-out both; }
-.animate-slide-in  { animation: slide-in 0.2s ease-out both; }
+.animate-fade-in   { animation: fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-in  { animation: slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-drawer    { animation: slide-right 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-dash-flow { animation: dash-flow 1.2s linear infinite; }
+.animate-radar     { animation: radar-pulse 2s ease-in-out infinite; }
+
+.stagger-1 { animation-delay: 40ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 120ms; }
+.stagger-4 { animation-delay: 160ms; }
+.stagger-5 { animation-delay: 200ms; }
 
 .skeleton {
   background: linear-gradient(90deg, #eae7e9 25%, #f0edef 50%, #eae7e9 75%);
   background-size: 400px 100%;
   animation: skeleton-shimmer 1.4s infinite linear;
   border-radius: 4px;
+}
+
+/* ── Respect Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ── Chart tooltip ────────────────────────────────────────────── */
@@ -139,5 +171,5 @@ body {
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
 }

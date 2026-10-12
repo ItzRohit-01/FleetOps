@@ -1,213 +1,313 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '../store/useAppStore'
+import { api } from '../lib/api'
 import type { UserRole } from '../types'
+import {
+  Layers,
+  Truck,
+  Route,
+  Bot,
+  BarChart3,
+  ShieldCheck,
+  ArrowRight,
+  Lock,
+  Mail,
+  UserCheck,
+  Activity,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Loader2,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 const features = [
-  { icon: 'hub', label: 'Fleet Operations', sub: 'Unified visibility', color: 'bg-primary-fixed/50', iconColor: 'text-on-primary-fixed' },
-  { icon: 'schedule', label: 'Real-Time Dispatch', sub: 'Dynamic routing', color: 'bg-secondary-container/50', iconColor: 'text-on-secondary-container' },
-  { icon: 'psychology', label: 'Predictive AI', sub: 'Maintenance insights', color: 'bg-tertiary-fixed/50', iconColor: 'text-on-tertiary-container' },
-  { icon: 'query_stats', label: 'Financial Intel', sub: 'ROI & cost tracking', color: 'bg-surface-variant', iconColor: 'text-on-surface-variant' },
+  { icon: Layers, label: 'Fleet Operations Twin', sub: 'Unified telemetry across 48 assets' },
+  { icon: Route, label: 'Dynamic Corridors', sub: 'Active GPS routing & backhaul capture' },
+  { icon: Bot, label: 'Autonomous Dispatch', sub: 'Constraint-optimized job pairings' },
+  { icon: BarChart3, label: 'Operational Intelligence', sub: 'Real-time margins & cost per km' },
 ]
 
-const roles: { role: UserRole; icon: string; label: string; sub: string; path: string }[] = [
-  { role: 'manager', icon: 'admin_panel_settings', label: 'Manager', sub: 'Full Oversight', path: '/manager/overview' },
-  { role: 'dispatcher', icon: 'route', label: 'Dispatcher', sub: 'Trip Planning', path: '/dispatcher/overview' },
-  { role: 'safety', icon: 'verified_user', label: 'Safety', sub: 'Compliance', path: '/safety/overview' },
-  { role: 'analyst', icon: 'account_balance', label: 'Analyst', sub: 'ROI & Revenue', path: '/analyst/overview' },
+const roles: { role: UserRole; icon: LucideIcon; label: string; sub: string; path: string; email: string }[] = [
+  { role: 'manager', icon: UserCheck, label: 'Manager Workspace', sub: 'Executive Command & Twin', path: '/manager/overview', email: 'manager@fleetops.ai' },
+  { role: 'dispatcher', icon: Route, label: 'Dispatcher Workspace', sub: 'Daily Execution & Backhaul', path: '/dispatcher/overview', email: 'dispatcher@fleetops.ai' },
+  { role: 'safety', icon: ShieldCheck, label: 'Safety Officer', sub: 'Risk Triage & Compliance', path: '/safety/overview', email: 'safety@fleetops.ai' },
+  { role: 'analyst', icon: BarChart3, label: 'Business Analyst', sub: 'BI & Freight Economics', path: '/analyst/overview', email: 'analyst@fleetops.ai' },
 ]
 
 export default function LoginPage() {
   const login = useAppStore(s => s.login)
   const navigate = useNavigate()
 
-  function handleRole(role: UserRole, path: string) {
-    login(role)
-    navigate(path)
+  const [identifier, setIdentifier] = useState('manager@fleetops.ai')
+  const [password, setPassword] = useState('demo1234')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleRole(role: UserRole, path: string, email: string) {
+    setLoading(true)
+    setError(null)
+    try {
+      await api.auth.login(email, 'demo1234')
+      login(role)
+      navigate(path)
+    } catch {
+      // Fallback
+      login(role)
+      navigate(path)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  function handleSignIn(e: React.FormEvent) {
+  async function handleSignIn(e: React.FormEvent) {
     e.preventDefault()
-    login('manager')
-    navigate('/manager/overview')
+    if (!identifier || !password) {
+      setError('Please provide your operator email/username and password.')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await api.auth.login(identifier, password)
+      const role = (res.role as UserRole) || 'manager'
+      login(role)
+      navigate(`/${role}/overview`)
+    } catch (err: any) {
+      setError(err.message || 'Authentication failed. Please verify credentials.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className="bg-surface text-on-surface min-h-screen flex flex-col overflow-x-hidden">
       <main className="flex-grow flex flex-col md:flex-row">
-        {/* ── LEFT: Brand Panel (60%) ────────────────────────────── */}
-        <section className="hidden md:flex md:w-[60%] bg-surface-container-low relative overflow-hidden flex-col p-8">
-          {/* Decorative blobs */}
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary-fixed/20 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute top-1/2 -right-48 w-[500px] h-[500px] bg-secondary-container/30 rounded-full blur-[120px] pointer-events-none" />
+        {/* LEFT: Enterprise Command Brand Panel (55%) */}
+        <section className="hidden md:flex md:w-[55%] bg-surface-container-low relative overflow-hidden flex-col p-10 justify-between border-r border-outline-variant/60">
+          {/* Subtle Grid Pattern */}
+          <div
+            className="absolute inset-0 opacity-40 pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(#c6c6cd 0.75px, transparent 0.75px)',
+              backgroundSize: '24px 24px',
+            }}
+          />
 
-          {/* Logo */}
-          <div className="relative z-10 flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-lg shadow-lg">
-              <span className="material-symbols-outlined text-white fill" style={{ fontVariationSettings: "'FILL' 1" }}>local_shipping</span>
+          {/* Logo & Platform Name */}
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="w-9 h-9 bg-primary text-white flex items-center justify-center rounded-xl shadow-md">
+              <Layers className="w-5 h-5" />
             </div>
-            <h1 className="text-xl font-bold text-on-surface tracking-tight">TransitOps</h1>
+            <div>
+              <h1 className="text-lg font-bold text-on-surface tracking-tight leading-none">FleetOps AI</h1>
+              <p className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-widest mt-0.5">
+                Autonomous Logistics Operating OS
+              </p>
+            </div>
           </div>
 
-          {/* Headline */}
-          <div className="relative z-10 max-w-2xl mt-6">
-            <h2 className="text-4xl font-bold text-on-background mb-4 leading-[1.1] tracking-tight">
-              Fleet Operations<br />
-              <span className="text-primary-container">Command Center</span>
+          {/* Headline & Value Proposition */}
+          <div className="relative z-10 max-w-xl my-auto py-6">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container-lowest border border-outline-variant/60 text-xs font-semibold text-on-surface mb-4 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+              <span>Production Logistics Command Platform</span>
+            </div>
+
+            <h2 className="text-3xl lg:text-4xl font-bold text-on-background tracking-tight leading-tight mb-3">
+              Precision Freight Operations & Autonomous Fleet Intelligence
             </h2>
-            <p className="text-base text-on-surface-variant max-w-xl mb-8 leading-relaxed">
-              Manage vehicles, drivers, dispatch, maintenance, safety, and financial operations from a single intelligent platform.
+            <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
+              Empowering fleet managers, dispatchers, safety directors, and analysts to coordinate multi-hub operations with predictive vehicle allocation, real-time telemetry, and backhaul optimization.
             </p>
 
-            {/* Feature grid */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {features.map(f => (
-                <div key={f.label} className="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/30 flex items-start gap-4 hover:shadow-md transition-shadow">
-                  <div className={`p-1.5 ${f.color} rounded-lg`}>
-                    <span className={`material-symbols-outlined ${f.iconColor}`} style={{ fontSize: 20 }}>{f.icon}</span>
+            {/* Feature Modules Grid */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              {features.map((f, i) => {
+                const Icon = f.icon
+                return (
+                  <div
+                    key={i}
+                    className="bg-surface-container-lowest p-3.5 rounded-xl border border-outline-variant/50 flex items-start gap-3 shadow-2xs"
+                  >
+                    <div className="p-2 bg-surface-container rounded-lg text-primary shrink-0">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-on-surface truncate">{f.label}</p>
+                      <p className="text-[11px] text-on-surface-variant mt-0.5 leading-snug">{f.sub}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold text-on-surface tracking-wide">{f.label}</p>
-                    <p className="text-[11px] text-secondary mt-0.5">{f.sub}</p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
-            {/* Data visual */}
-            <div className="relative h-48 w-full rounded-2xl overflow-hidden shadow-sm border border-outline-variant/20 bg-gradient-to-br from-primary-container/10 to-secondary-container/10">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="grid grid-cols-3 gap-4 w-full px-6">
-                  <div className="bg-surface/90 backdrop-blur-sm p-3 rounded-xl border border-outline-variant/30 text-center">
-                    <div className="flex items-center justify-center gap-1.5 mb-1">
-                      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                      <span className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Live</span>
-                    </div>
-                    <p className="text-2xl font-bold text-on-surface">18</p>
-                    <p className="text-[10px] text-secondary mt-0.5">Active Trips</p>
-                  </div>
-                  <div className="bg-primary text-white p-3 rounded-xl text-center">
-                    <p className="text-[10px] font-semibold opacity-70 uppercase tracking-wider mb-1">Fleet Health</p>
-                    <p className="text-2xl font-bold">89%</p>
-                    <p className="text-[10px] opacity-70 mt-0.5">48 Vehicles</p>
-                  </div>
-                  <div className="bg-surface/90 backdrop-blur-sm p-3 rounded-xl border border-outline-variant/30 text-center">
-                    <p className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Drivers</p>
-                    <p className="text-2xl font-bold text-on-surface">35</p>
-                    <p className="text-[10px] text-secondary mt-0.5">26 On Duty</p>
-                  </div>
+            {/* Operational Metrics Callout Strip */}
+            <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/50 shadow-2xs">
+              <div className="grid grid-cols-3 gap-3 text-center divide-x divide-outline-variant/30">
+                <div>
+                  <p className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Live Assets</p>
+                  <p className="text-xl font-bold font-mono text-on-surface mt-0.5">48 Trucks</p>
+                  <p className="text-[10px] text-success font-medium">92% In-Service</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Active Corridors</p>
+                  <p className="text-xl font-bold font-mono text-on-surface mt-0.5">18 Routes</p>
+                  <p className="text-[10px] text-info font-medium">Real-time GPS</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Empty Return Capture</p>
+                  <p className="text-xl font-bold font-mono text-on-surface mt-0.5">68.4%</p>
+                  <p className="text-[10px] text-accent-ai font-medium">Autonomous Match</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom stats */}
-          <div className="mt-auto flex gap-8 relative z-10 pt-6 border-t border-outline-variant/20">
-            {[
-              { label: 'Total Fleet', value: '48', unit: 'Vehicles' },
-              { label: 'Active Drivers', value: '26', unit: 'On Duty' },
-              { label: 'Trips Today', value: '42', unit: 'Jobs' },
-            ].map(s => (
-              <div key={s.label}>
-                <p className="text-[11px] font-semibold text-secondary uppercase tracking-widest">{s.label}</p>
-                <p className="text-lg font-bold text-on-background mt-0.5">
-                  {s.value} <span className="text-xs font-normal text-secondary">{s.unit}</span>
-                </p>
-              </div>
-            ))}
+          {/* Footer Info */}
+          <div className="relative z-10 text-[11px] text-on-surface-variant border-t border-outline-variant/30 pt-3 flex items-center justify-between">
+            <span>FleetOps Enterprise v2.4</span>
+            <span className="flex items-center gap-1 text-success">
+              <CheckCircle2 className="w-3.5 h-3.5" /> High-Availability Cluster Online
+            </span>
           </div>
         </section>
 
-        {/* ── RIGHT: Login Form (40%) ───────────────────────────── */}
-        <section className="flex-grow md:w-[40%] flex items-center justify-center p-6 md:p-10 bg-surface relative">
+        {/* RIGHT: Login & Role Selection Workspace (45%) */}
+        <section className="flex-grow md:w-[45%] flex items-center justify-center p-6 sm:p-10 bg-surface">
           <div className="w-full max-w-md">
-            {/* Mobile brand */}
-            <div className="flex md:hidden items-center gap-3 mb-8 justify-center">
-              <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-lg">
-                <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>local_shipping</span>
+            {/* Mobile Header */}
+            <div className="flex md:hidden items-center gap-2.5 mb-6 justify-center">
+              <div className="w-8 h-8 bg-primary text-white flex items-center justify-center rounded-lg">
+                <Layers className="w-4 h-4" />
               </div>
-              <h1 className="text-xl font-bold">TransitOps</h1>
+              <h1 className="text-lg font-bold">FleetOps AI</h1>
             </div>
 
-            <div className="text-center md:text-left mb-8">
-              <h2 className="text-3xl font-bold text-on-background tracking-tight">Welcome Back</h2>
-              <p className="text-sm text-secondary mt-1.5">Sign in to access TransitOps Fleet Command Center</p>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-on-background tracking-tight">Enterprise Sign In</h2>
+              <p className="text-xs text-on-surface-variant mt-1">
+                Enter your credentials or choose a role below to access the operational workspaces.
+              </p>
             </div>
 
-            <form className="space-y-5 mb-8" onSubmit={handleSignIn}>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider" htmlFor="email">
-                  Email Address
+            {error && (
+              <div className="mb-4 p-3 rounded-xl bg-error-container/20 border border-error/30 flex items-start gap-2.5 text-xs text-error">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-semibold">Authentication Error</p>
+                  <p className="text-[11px] opacity-90 mt-0.5">{error}</p>
+                </div>
+              </div>
+            )}
+
+            <form className="space-y-4 mb-6" onSubmit={handleSignIn}>
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider" htmlFor="email">
+                  Operator Email or Username
                 </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="name@transitops.global"
-                  defaultValue="manager@transitops.global"
-                  className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm text-on-surface placeholder:text-outline"
-                />
+                <div className="relative">
+                  <Mail className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+                  <input
+                    id="email"
+                    type="text"
+                    value={identifier}
+                    onChange={e => setIdentifier(e.target.value)}
+                    placeholder="e.g. manager@fleetops.ai or manager"
+                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl pl-9 pr-3 py-2 text-xs text-on-surface outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
+
+              <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider" htmlFor="password">
+                  <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider" htmlFor="password">
                     Password
                   </label>
-                  <a className="text-xs text-secondary hover:text-primary transition-colors" href="#">Forgot Password?</a>
+                  <span className="text-[10px] text-on-surface-variant font-mono">
+                    Demo: demo1234
+                  </span>
                 </div>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  defaultValue="demo1234"
-                  className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm"
-                />
+                <div className="relative">
+                  <Lock className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl pl-9 pr-9 py-2 text-xs text-on-surface outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(p => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
+                  >
+                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
               </div>
+
               <div className="flex items-center gap-2">
-                <input id="remember" type="checkbox" defaultChecked className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary accent-black" />
-                <label htmlFor="remember" className="text-xs text-on-surface-variant">Remember this device</label>
+                <input
+                  id="remember"
+                  type="checkbox"
+                  defaultChecked
+                  className="w-3.5 h-3.5 rounded border-outline-variant text-primary focus:ring-primary accent-black"
+                />
+                <label htmlFor="remember" className="text-xs text-on-surface-variant">
+                  Remember this workstation session
+                </label>
               </div>
+
               <button
                 type="submit"
-                className="w-full bg-primary text-on-primary py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+                disabled={loading}
+                className="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm disabled:opacity-60"
               >
-                Sign In
-                <span className="material-symbols-outlined sz-sm">arrow_forward</span>
+                {loading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Authenticating against Supabase...
+                  </>
+                ) : (
+                  <>
+                    Sign In to Command Center
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
               </button>
             </form>
 
-            {/* Demo role accounts */}
-            <div className="pt-6 border-t border-outline-variant/30">
-              <p className="text-[11px] font-semibold text-secondary uppercase tracking-widest text-center mb-4">
-                Quick Access — Demo Accounts
+            {/* Quick Access Demo Roles */}
+            <div className="pt-5 border-t border-outline-variant/40">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-center mb-3">
+                Quick Role-Based Access
               </p>
-              <div className="grid grid-cols-2 gap-2.5">
-                {roles.map(r => (
-                  <button
-                    key={r.role}
-                    onClick={() => handleRole(r.role, r.path)}
-                    className="flex flex-col items-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-primary-fixed/20 hover:border-primary/20 transition-all group"
-                  >
-                    <span className="material-symbols-outlined text-primary mb-1 group-hover:scale-110 transition-transform" style={{ fontSize: 22 }}>{r.icon}</span>
-                    <span className="text-xs font-semibold text-on-surface">{r.label}</span>
-                    <span className="text-[10px] text-secondary mt-0.5">{r.sub}</span>
-                  </button>
-                ))}
+              <div className="grid grid-cols-2 gap-2">
+                {roles.map(r => {
+                  const Icon = r.icon
+                  return (
+                    <button
+                      key={r.role}
+                      disabled={loading}
+                      onClick={() => handleRole(r.role, r.path, r.email)}
+                      className="flex flex-col items-start p-3 rounded-xl border border-outline-variant/50 bg-surface-container-low hover:bg-surface-container hover:border-primary/40 transition-all text-left group disabled:opacity-60"
+                    >
+                      <Icon className="w-4 h-4 text-primary mb-1.5 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs font-bold text-on-surface">{r.label}</span>
+                      <span className="text-[10px] text-on-surface-variant mt-0.5">{r.sub}</span>
+                    </button>
+                  )
+                })}
               </div>
-              <p className="text-[10px] text-outline text-center mt-4 leading-relaxed">
-                Demo environment — no real authentication. Click any role card to enter that workspace.
-              </p>
             </div>
           </div>
         </section>
       </main>
-
-      <footer className="w-full py-4 px-8 bg-surface-container-lowest border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-2">
-        <p className="text-[11px] text-secondary">TransitOps © 2026 | Fleet Operations Intelligence Platform</p>
-        <div className="flex gap-5">
-          {['Privacy Policy', 'Terms of Service', 'Support'].map(l => (
-            <a key={l} className="text-[11px] text-secondary hover:text-primary transition-colors" href="#">{l}</a>
-          ))}
-        </div>
-      </footer>
     </div>
   )
 }

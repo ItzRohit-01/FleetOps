@@ -167,26 +167,26 @@ export interface RoleConfig {
 export const ROLE_CONFIGS: Record<UserRole, RoleConfig> = {
   manager: {
     role: 'manager',
-    displayName: 'Marcus Chen',
-    title: 'Fleet Director',
-    email: 'manager@transitops.global',
+    displayName: 'Vikramaditya Rao',
+    title: 'Fleet Operations Director',
+    email: 'manager@fleetops.ai',
   },
   dispatcher: {
     role: 'dispatcher',
-    displayName: 'Priya Sharma',
+    displayName: 'Priya Raman',
     title: 'Senior Dispatcher',
-    email: 'dispatcher@transitops.global',
+    email: 'dispatcher@fleetops.ai',
   },
   safety: {
     role: 'safety',
-    displayName: 'Arjun Mehta',
+    displayName: 'Arjun Kumar',
     title: 'Safety & Compliance Officer',
-    email: 'safety@transitops.global',
+    email: 'safety@fleetops.ai',
   },
   analyst: {
     role: 'analyst',
-    displayName: 'Sarah Williams',
-    title: 'Operations Analyst',
-    email: 'analyst@transitops.global',
+    displayName: 'Karthik Subramanian',
+    title: 'Operations & Freight Analyst',
+    email: 'analyst@fleetops.ai',
   },
 }

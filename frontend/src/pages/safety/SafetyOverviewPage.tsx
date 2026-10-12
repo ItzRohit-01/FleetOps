@@ -5,6 +5,17 @@ import { ChartContainer, SectionCard, PageGrid } from '../../components/ui/Chart
 import { IncidentSeverityChart } from '../../components/charts/FleetStatusChart'
 import { IncidentTrendChart } from '../../components/charts/TrendCharts'
 import StatusBadge from '../../components/ui/StatusBadge'
+import {
+  ShieldAlert,
+  AlertTriangle,
+  Users,
+  FileWarning,
+  ShieldCheck,
+  ChevronRight,
+  Activity,
+  Clock,
+  MapPin,
+} from 'lucide-react'
 
 export default function SafetyOverviewPage() {
   const openIncidents = incidents.filter(i => i.status === 'open' || i.status === 'investigating')
@@ -13,55 +24,75 @@ export default function SafetyOverviewPage() {
   const nonCompliantRecords = complianceRecords.filter(c => c.status === 'expired' || c.status === 'expiring-soon')
 
   return (
-    <div className="space-y-6 max-w-[1400px]">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-on-surface">Safety & Compliance Command</h1>
-          <p className="text-xs text-on-surface-variant mt-0.5">
-            Real-time monitoring of fleet accidents, driver risk scores, safety violations, and statutory compliance
-          </p>
+    <div className="space-y-4 max-w-[1440px]">
+      {/* Safety Command Strip */}
+      <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-danger/10 text-danger rounded-lg">
+            <ShieldAlert className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold text-on-surface flex items-center gap-2">
+              Safety & Regulatory Risk Command
+              {criticalCount > 0 && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-danger/10 text-danger border border-danger/20 animate-pulse">
+                  {criticalCount} Critical Active
+                </span>
+              )}
+            </h1>
+            <p className="text-xs text-on-surface-variant">
+              Telemetry violations, collision investigations, HOS driver fatigue, and statutory certificate audits
+            </p>
+          </div>
         </div>
-        <div className="flex gap-2">
+
+        <div className="flex items-center gap-2">
           <Link
             to="/safety/incidents"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-danger text-white rounded-lg text-xs font-semibold hover:bg-danger/90 transition-colors shadow-xs"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-danger text-white rounded-lg text-xs font-semibold hover:bg-danger/90 transition-colors shadow-2xs"
           >
-            <span className="material-symbols-outlined sz-sm" style={{ fontSize: 16 }}>report</span>
-            View {openIncidents.length} Open Incidents
+            <AlertTriangle className="w-3.5 h-3.5" />
+            Triage {openIncidents.length} Open Incidents
           </Link>
         </div>
       </div>
 
+      {/* KPI Cards */}
       <KpiGrid cols={4}>
         <KpiCard
           label="Open Incidents"
           value={openIncidents.length}
-          icon="warning"
-          iconColor="#ef4444"
-          subtext={`${criticalCount} Critical incidents requiring intervention`}
+          icon={<AlertTriangle className="w-5 h-5 text-danger" />}
+          iconColor="text-danger"
+          iconBg="bg-danger/10"
+          subtext={`${criticalCount} Critical requiring intervention`}
           trend={{ value: '+2 today', positive: false }}
         />
         <KpiCard
-          label="Drivers Monitored at Risk"
+          label="Drivers on Watchlist"
           value={highRiskDrivers.length}
-          icon="person_alert"
-          iconColor="#f59e0b"
-          subtext="1 High risk · 4 Medium risk fatigue/violations"
+          icon={<Users className="w-5 h-5 text-warning" />}
+          iconColor="text-warning"
+          iconBg="bg-warning/10"
+          subtext="1 High risk · 4 Medium risk fatigue"
         />
         <KpiCard
           label="Compliance Deficits"
           value={nonCompliantRecords.length}
-          icon="assignment_late"
-          iconColor="#dc2626"
+          icon={<FileWarning className="w-5 h-5 text-red-600" />}
+          iconColor="text-red-600"
+          iconBg="bg-red-500/10"
           subtext="5 expired fitness/permits, 8 expiring soon"
         />
         <KpiCard
-          label="Fleet Safety Score"
+          label="Fleet Safety Rating"
           value="88.4 / 100"
-          icon="verified_user"
-          iconColor="#10b981"
-          subtext="Top quartile logistics safety benchmark"
+          icon={<ShieldCheck className="w-5 h-5 text-success" />}
+          iconColor="text-success"
+          iconBg="bg-success/10"
+          subtext="Top quartile logistics benchmark"
           trend={{ value: '+1.2% vs last month', positive: true }}
+          progress={88}
         />
       </KpiGrid>
 
@@ -84,41 +115,43 @@ export default function SafetyOverviewPage() {
         </ChartContainer>
       </PageGrid>
 
-      {/* Two panels: Critical Incidents Queue + High-Risk Drivers */}
+      {/* Two Panels: Critical Incidents Queue + High-Risk Drivers */}
       <PageGrid cols={2}>
         <SectionCard
           title="Critical & High Priority Incidents"
           subtitle="Immediate action items requiring safety supervisor review"
           action={
-            <Link to="/safety/incidents" className="text-xs text-primary font-semibold hover:underline">
-              All Incidents →
+            <Link to="/safety/incidents" className="text-xs text-primary font-semibold hover:underline flex items-center gap-0.5">
+              All Incidents <ChevronRight className="w-3 h-3" />
             </Link>
           }
         >
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {openIncidents.slice(0, 4).map(incident => {
               const vehicle = vehicleById(incident.vehicleId)
               const driver = driverById(incident.driverId)
               return (
                 <div
                   key={incident.id}
-                  className="p-3 bg-surface-container-low rounded-xl border border-outline-variant/50 hover:border-danger/30 transition-all text-xs"
+                  className="p-3 bg-surface-container-low rounded-xl border border-outline-variant/50 hover:border-danger/40 transition-all text-xs"
                 >
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <StatusBadge status={incident.severity} />
-                      <span className="font-semibold text-on-surface uppercase tracking-wider text-[11px]">{incident.type}</span>
+                      <StatusBadge status={incident.severity} dot />
+                      <span className="font-bold text-on-surface uppercase tracking-wider text-[11px]">{incident.type}</span>
                     </div>
-                    <span className="text-[11px] text-on-surface-variant font-mono">
+                    <span className="text-[10px] text-on-surface-variant font-mono">
                       {incident.timestamp.split('T')[1]?.slice(0, 5)} hrs
                     </span>
                   </div>
-                  <p className="text-on-surface line-clamp-2 mb-2 leading-relaxed">{incident.description}</p>
+                  <p className="text-on-surface line-clamp-1 mb-2 leading-relaxed text-[11px]">{incident.description}</p>
                   <div className="flex items-center justify-between text-[11px] text-on-surface-variant pt-2 border-t border-outline-variant/30">
                     <span>
                       <strong className="text-on-surface">{vehicle?.regNumber}</strong> · {driver?.name}
                     </span>
-                    <span className="truncate max-w-[180px]">{incident.location}</span>
+                    <span className="truncate max-w-[180px] flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-info" /> {incident.location}
+                    </span>
                   </div>
                 </div>
               )
@@ -130,19 +163,19 @@ export default function SafetyOverviewPage() {
           title="Driver Risk Watchlist"
           subtitle="Drivers with elevated HOS hours, speeding events, or safety strikes"
           action={
-            <Link to="/safety/drivers" className="text-xs text-primary font-semibold hover:underline">
-              Driver Details →
+            <Link to="/safety/drivers" className="text-xs text-primary font-semibold hover:underline flex items-center gap-0.5">
+              Driver Details <ChevronRight className="w-3 h-3" />
             </Link>
           }
         >
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {highRiskDrivers.map(d => (
               <div
                 key={d.id}
                 className="p-3 bg-surface-container-low rounded-xl border border-outline-variant/50 flex items-center justify-between text-xs"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
                     d.riskScore === 'high' ? 'bg-danger/10 text-danger' : 'bg-warning/10 text-warning'
                   }`}>
                     {d.name.split(' ').map(n => n[0]).join('')}
@@ -153,12 +186,12 @@ export default function SafetyOverviewPage() {
                       <StatusBadge status={d.riskScore} />
                     </div>
                     <p className="text-[11px] text-on-surface-variant">
-                      {d.depot} · {d.hoursThisWeek} hrs this week · {d.violations} strikes
+                      {d.depot} · {d.hoursThisWeek}h logged · {d.violations} strikes
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-semibold text-on-surface">★ {d.rating}</span>
+                  <span className="text-xs font-semibold text-on-surface">⭐ {d.rating}</span>
                   <p className="text-[10px] text-on-surface-variant">Safety Rating</p>
                 </div>
               </div>

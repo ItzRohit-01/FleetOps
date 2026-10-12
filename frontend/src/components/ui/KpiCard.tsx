@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 export interface KpiCardProps {
   label: string
   value: string | number
-  icon: string
+  icon: ReactNode | string
   iconColor?: string
   iconBg?: string
   trend?: { value: string; positive?: boolean }
@@ -25,20 +25,26 @@ export default function KpiCard({
   return (
     <div
       className={cn(
-        'bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/50 shadow-sm transition-all duration-200',
-        onClick && 'cursor-pointer hover:shadow-md hover:border-outline-variant',
+        'bg-surface-container-lowest rounded-xl p-4.5 border border-outline-variant/60 shadow-sm transition-all duration-200 hover:shadow-md hover:border-outline-variant',
+        onClick && 'cursor-pointer hover:bg-surface-container-low/40',
         className
       )}
       onClick={onClick}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className={cn('p-2 rounded-lg', !isHexOrRgb && iconBg)} style={isHexOrRgb ? { backgroundColor: `${iconColor}15` } : undefined}>
-          <span
-            className={cn('material-symbols-outlined', !isHexOrRgb && iconColor)}
-            style={{ fontSize: 20, color: isHexOrRgb ? iconColor : undefined }}
-          >
-            {icon}
-          </span>
+      <div className="flex items-start justify-between mb-2.5">
+        <div className={cn('p-2 rounded-lg flex items-center justify-center', !isHexOrRgb && iconBg)} style={isHexOrRgb ? { backgroundColor: `${iconColor}15` } : undefined}>
+          {typeof icon === 'string' ? (
+            <span
+              className={cn('material-symbols-outlined', !isHexOrRgb && iconColor)}
+              style={{ fontSize: 20, color: isHexOrRgb ? iconColor : undefined }}
+            >
+              {icon}
+            </span>
+          ) : (
+            <span className={cn('flex items-center justify-center', !isHexOrRgb && iconColor)} style={isHexOrRgb ? { color: iconColor } : undefined}>
+              {icon}
+            </span>
+          )}
         </div>
         {trend && (
           <span className={cn('text-[11px] font-bold', trend.positive ? 'text-success' : 'text-danger')}>

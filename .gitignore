@@ -35,3 +35,13 @@ lerna-debug.log*
 
 # Vite cache
 .vite/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+env/
+venv/
+

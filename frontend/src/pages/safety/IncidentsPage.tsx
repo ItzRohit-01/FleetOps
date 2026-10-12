@@ -1,19 +1,40 @@
 import { useState } from 'react'
-import { incidents as initialIncidents, vehicleById, driverById } from '../../data/mockData'
+import { vehicleById, driverById } from '../../data/mockData'
 import DataTable, { type Column } from '../../components/ui/DataTable'
 import StatusBadge from '../../components/ui/StatusBadge'
-import { SectionCard } from '../../components/ui/ChartContainer'
+import DetailDrawer from '../../components/ui/DetailDrawer'
 import { useAppStore } from '../../store/useAppStore'
+import { api } from '../../lib/api'
 import type { Incident, IncidentSeverity, IncidentStatus } from '../../types'
+import {
+  AlertTriangle,
+  ShieldAlert,
+  Wrench,
+  Clock,
+  User,
+  CheckCircle2,
+  MapPin,
+  Search,
+  Filter,
+  Check,
+  X,
+  FileText,
+  Activity,
+  Truck,
+} from 'lucide-react'
 
 export default function IncidentsPage() {
-  const [incidentsList, setIncidentsList] = useState<Incident[]>(initialIncidents)
+  // Use live store incidents; fall back to store initial data
+  const storeIncidents = useAppStore(s => s.incidents)
+  const updateIncidentStatus = useAppStore(s => s.updateIncidentStatus)
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null)
   const [severityFilter, setSeverityFilter] = useState<string>('all')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [resolutionInput, setResolutionInput] = useState('')
   const showToast = useAppStore(s => s.showToast)
+
+  const incidentsList = storeIncidents
 
   const filteredIncidents = incidentsList.filter(inc => {
     const matchesSeverity = severityFilter === 'all' || inc.severity === severityFilter
@@ -30,305 +51,303 @@ export default function IncidentsPage() {
     return matchesSeverity && matchesStatus && matchesSearch
   })
 
-  function handleResolve(incidentId: string) {
+  async function handleResolve(incidentId: string) {
     if (!resolutionInput.trim()) return
-    setIncidentsList(prev => prev.map(inc => {
-      if (inc.id === incidentId) {
-        return {
-          ...inc,
-          status: 'resolved' as IncidentStatus,
-          resolution: resolutionInput,
-          actionHistory: [
-            ...inc.actionHistory,
-            { timestamp: new Date().toISOString(), action: `Incident resolved: ${resolutionInput}`, by: 'Arjun Mehta' },
-          ],
-        }
-      }
-      return inc
-    }))
-    setSelectedIncident(prev => prev ? {
-      ...prev,
-      status: 'resolved',
-      resolution: resolutionInput,
-      actionHistory: [
-        ...prev.actionHistory,
-        { timestamp: new Date().toISOString(), action: `Incident resolved: ${resolutionInput}`, by: 'Arjun Mehta' },
-      ],
-    } : null)
+    const note = `Incident resolved: ${resolutionInput}`
+    await updateIncidentStatus(incidentId, 'resolved', note)
+    // Sync selected incident UI state
+    setSelectedIncident(prev =>
+      prev && prev.id === incidentId
+        ? { ...prev, status: 'resolved', resolution: resolutionInput,
+            actionHistory: [...prev.actionHistory, { timestamp: new Date().toISOString(), action: note, by: 'Safety Officer' }] }
+        : prev
+    )
     setResolutionInput('')
-    showToast(`Incident #${incidentId} marked as resolved`, 'success')
   }
 
-  function handleMarkInvestigating(incidentId: string) {
-    setIncidentsList(prev => prev.map(inc => {
-      if (inc.id === incidentId) {
-        return {
-          ...inc,
-          status: 'investigating' as IncidentStatus,
-          actionHistory: [
-            ...inc.actionHistory,
-            { timestamp: new Date().toISOString(), action: 'Investigation initiated by safety officer', by: 'Arjun Mehta' },
-          ],
-        }
-      }
-      return inc
-    }))
-    setSelectedIncident(prev => prev ? {
-      ...prev,
-      status: 'investigating',
-      actionHistory: [
-        ...prev.actionHistory,
-        { timestamp: new Date().toISOString(), action: 'Investigation initiated by safety officer', by: 'Arjun Mehta' },
-      ],
-    } : null)
+  async function handleMarkInvestigating(incidentId: string) {
+    const note = 'Safety officer initiated on-site investigation'
+    await updateIncidentStatus(incidentId, 'investigating', note)
+    setSelectedIncident(prev =>
+      prev && prev.id === incidentId
+        ? { ...prev,
+            status: 'investigating',
+            actionHistory: [
+              ...prev.actionHistory,
+              {
+                timestamp: new Date().toISOString(),
+                action: 'Safety officer initiated on-site investigation',
+                by: 'Arjun Mehta',
+              },
+            ],
+          }
+        : null
+    )
     showToast(`Incident #${incidentId} updated to Investigating`, 'info')
   }
 
   const columns: Column<Incident>[] = [
     {
       key: 'id',
-      header: 'ID / Time',
-      render: (i) => (
-        <div className="font-mono text-xs">
-          <span className="font-bold text-primary">{i.id}</span>
-          <p className="text-[11px] text-on-surface-variant">{i.timestamp.replace('T', ' ').slice(0, 16)}</p>
+      header: 'Incident ID / Logged',
+      render: i => (
+        <div>
+          <span className="font-mono text-xs font-bold text-primary">{i.id}</span>
+          <p className="text-[10px] text-on-surface-variant font-mono">
+            {i.timestamp.replace('T', ' ').slice(0, 16)}
+          </p>
         </div>
       ),
+    },
+    {
+      key: 'severity',
+      header: 'Severity',
+      render: i => <StatusBadge status={i.severity} dot />,
+    },
+    {
+      key: 'status',
+      header: 'Triage Status',
+      render: i => <StatusBadge status={i.status} />,
     },
     {
       key: 'type',
-      header: 'Type & Severity',
-      render: (i) => (
-        <div>
-          <span className="font-semibold text-xs capitalize text-on-surface block mb-1">{i.type}</span>
-          <StatusBadge status={i.severity} />
-        </div>
+      header: 'Classification',
+      render: i => (
+        <span className="text-xs font-semibold capitalize text-on-surface">
+          {i.type.replace('-', ' ')}
+        </span>
       ),
     },
     {
-      key: 'vehicleDriver',
-      header: 'Vehicle & Driver',
-      render: (i) => {
-        const vehicle = vehicleById(i.vehicleId)
-        const driver = driverById(i.driverId)
+      key: 'location',
+      header: 'Corridor Location',
+      render: i => (
+        <span className="text-xs text-on-surface truncate max-w-[200px] flex items-center gap-1">
+          <MapPin className="w-3 h-3 text-info shrink-0" />
+          <span className="truncate">{i.location}</span>
+        </span>
+      ),
+    },
+    {
+      key: 'vehicleId',
+      header: 'Involved Vehicle & Driver',
+      render: i => {
+        const v = vehicleById(i.vehicleId)
+        const d = driverById(i.driverId)
         return (
           <div className="text-xs">
-            <p className="font-mono font-medium text-on-surface">{vehicle ? vehicle.regNumber : i.vehicleId}</p>
-            <p className="text-on-surface-variant text-[11px]">{driver ? driver.name : i.driverId}</p>
+            <span className="font-mono font-bold text-on-surface">{v?.regNumber ?? i.vehicleId}</span>
+            <p className="text-[10px] text-on-surface-variant">{d?.name ?? i.driverId}</p>
           </div>
         )
       },
     },
-    {
-      key: 'description',
-      header: 'Incident Details',
-      render: (i) => (
-        <div className="text-xs max-w-[340px]">
-          <p className="text-on-surface line-clamp-2 leading-relaxed">{i.description}</p>
-          <p className="text-[10px] text-on-surface-variant truncate mt-0.5">📍 {i.location}</p>
-        </div>
-      ),
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (i) => <StatusBadge status={i.status} />,
-    },
-    {
-      key: 'action',
-      header: 'Action',
-      render: (i) => (
-        <button
-          onClick={() => setSelectedIncident(i)}
-          className="px-2.5 py-1 text-xs font-semibold rounded bg-surface-container-low hover:bg-surface-container-high text-primary border border-outline-variant/60 transition-colors"
-        >
-          Inspect
-        </button>
-      ),
-      align: 'right',
-    },
   ]
 
+  const criticalCount = incidentsList.filter(i => i.severity === 'critical' && i.status !== 'resolved').length
+  const investigatingCount = incidentsList.filter(i => i.status === 'investigating').length
+
+  const vehicle = selectedIncident ? vehicleById(selectedIncident.vehicleId) : null
+  const driver = selectedIncident ? driverById(selectedIncident.driverId) : null
+
   return (
-    <div className="space-y-6 max-w-[1400px]">
-      <div>
-        <h1 className="text-xl font-bold text-on-surface">Incident Log & Investigation</h1>
-        <p className="text-xs text-on-surface-variant mt-0.5">
-          Manage accident reports, roadside breakdowns, HOS fatigue warnings, and disciplinary workflows
-        </p>
+    <div className="space-y-4 max-w-[1440px]">
+      {/* Safety Incident Command Strip */}
+      <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-danger/10 text-danger rounded-lg">
+            <ShieldAlert className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold text-on-surface flex items-center gap-2">
+              Safety Triage & Incident Resolution Board
+              {criticalCount > 0 && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-danger/10 text-danger border border-danger/20 animate-pulse">
+                  {criticalCount} Critical Active
+                </span>
+              )}
+            </h1>
+            <p className="text-xs text-on-surface-variant">
+              Telemetry violations, highway collisions, and mechanical breakdown investigations
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs">
+          <span className="px-3 py-1.5 bg-surface-container-low rounded-lg border border-outline-variant/40 font-semibold text-on-surface">
+            {investigatingCount} Under Investigation
+          </span>
+        </div>
       </div>
 
-      <SectionCard
-        title="Fleet Incidents Master Record"
-        subtitle={`${filteredIncidents.length} incident records indexed`}
-        action={
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Severity Filter */}
-            <select
-              value={severityFilter}
-              onChange={(e) => setSeverityFilter(e.target.value)}
-              className="text-xs bg-surface-container-low border border-outline-variant/60 rounded-lg px-2.5 py-1.5 text-on-surface focus:outline-none"
-            >
-              <option value="all">All Severities</option>
-              <option value="critical">Critical</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
+      {/* Main Board Card */}
+      <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/60 shadow-sm p-4">
+        {/* Filter Controls Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-outline-variant/30">
+          <div className="relative max-w-sm w-full">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+            <input
+              type="text"
+              placeholder="Filter by description, location, vehicle, driver..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full bg-surface-container-low border border-outline-variant/50 rounded-lg pl-8 pr-3 py-1.5 text-xs text-on-surface outline-none focus:border-primary transition-colors"
+            />
+          </div>
 
-            {/* Status Filter */}
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="text-xs bg-surface-container-low border border-outline-variant/60 rounded-lg px-2.5 py-1.5 text-on-surface focus:outline-none"
-            >
-              <option value="all">All Statuses</option>
-              <option value="open">Open</option>
-              <option value="investigating">Investigating</option>
-              <option value="resolved">Resolved</option>
-              <option value="closed">Closed</option>
-            </select>
-
-            {/* Search */}
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
-              <input
-                type="text"
-                placeholder="Search incidents..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs bg-surface-container-low border border-outline-variant/60 rounded-lg text-on-surface focus:outline-none focus:border-primary w-48"
-              />
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] text-on-surface-variant font-semibold mr-1">Severity:</span>
+              {['all', 'critical', 'high', 'medium', 'low'].map(s => (
+                <button
+                  key={s}
+                  onClick={() => setSeverityFilter(s)}
+                  className={`px-2 py-0.5 rounded text-[11px] font-semibold uppercase transition-colors ${
+                    severityFilter === s
+                      ? s === 'critical'
+                        ? 'bg-danger text-white'
+                        : 'bg-surface-container-high text-on-surface font-bold border border-outline-variant'
+                      : 'text-on-surface-variant hover:bg-surface-container'
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
           </div>
-        }
-      >
+        </div>
+
+        {/* Incidents Data Table */}
         <DataTable
           columns={columns}
           data={filteredIncidents}
-          keyExtractor={(i) => i.id}
-          onRowClick={(i) => setSelectedIncident(i)}
-          emptyMessage="No incidents found for current filters"
+          rowKey={r => r.id}
+          onRowClick={r => setSelectedIncident(r)}
+          maxRows={15}
+          compact
         />
-      </SectionCard>
+      </div>
 
-      {/* Detail Modal / Drawer */}
-      {selectedIncident && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 animate-fade-in space-y-5">
-            <div className="flex items-start justify-between border-b border-outline-variant/50 pb-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-mono text-sm font-bold text-primary">#{selectedIncident.id}</span>
-                  <StatusBadge status={selectedIncident.severity} />
-                  <StatusBadge status={selectedIncident.status} />
-                </div>
-                <h2 className="text-base font-bold text-on-surface capitalize">
-                  {selectedIncident.type} Incident Report
-                </h2>
-                <p className="text-xs text-on-surface-variant">{selectedIncident.timestamp.replace('T', ' ')} · {selectedIncident.location}</p>
+      {/* Slide-out Incident Triage & Resolution Drawer */}
+      <DetailDrawer
+        isOpen={!!selectedIncident}
+        onClose={() => setSelectedIncident(null)}
+        title={selectedIncident ? `Incident #${selectedIncident.id} · ${selectedIncident.type.toUpperCase()}` : ''}
+        subtitle={selectedIncident ? selectedIncident.location : ''}
+        width="max-w-lg"
+      >
+        {selectedIncident && (
+          <div className="space-y-4">
+            {/* Status & Severity Pill */}
+            <div className="flex items-center justify-between p-3.5 bg-surface-container-low rounded-xl">
+              <div className="flex items-center gap-2">
+                <StatusBadge status={selectedIncident.severity} dot />
+                <StatusBadge status={selectedIncident.status} />
               </div>
-              <button
-                onClick={() => setSelectedIncident(null)}
-                className="p-1 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
-              >
-                <span className="material-symbols-outlined sz-sm">close</span>
-              </button>
+              <span className="text-[10px] font-mono text-on-surface-variant">
+                Logged: {selectedIncident.timestamp.replace('T', ' ').slice(0, 16)}
+              </span>
             </div>
 
-            {/* In-depth details */}
-            <div className="grid grid-cols-2 gap-3 text-xs bg-surface-container-low p-3.5 rounded-xl border border-outline-variant/40">
-              <div>
-                <p className="text-on-surface-variant text-[11px]">Involved Vehicle</p>
-                <p className="font-mono font-bold text-on-surface">
-                  {vehicleById(selectedIncident.vehicleId)?.regNumber} ({vehicleById(selectedIncident.vehicleId)?.make} {vehicleById(selectedIncident.vehicleId)?.model})
-                </p>
+            {/* Description Summary */}
+            <div className="bg-surface-container-low p-3.5 rounded-xl space-y-1 text-xs">
+              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+                Event Description & Telemetry Flag
+              </span>
+              <p className="text-on-surface leading-relaxed pt-1">{selectedIncident.description}</p>
+            </div>
+
+            {/* Involved Assets */}
+            <div className="grid grid-cols-2 gap-2.5 text-xs">
+              <div className="bg-surface-container-low p-3 rounded-xl space-y-1">
+                <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+                  <Truck className="w-3 h-3 text-info" /> Vehicle
+                </span>
+                {vehicle ? (
+                  <div>
+                    <p className="font-bold text-on-surface">{vehicle.regNumber}</p>
+                    <p className="text-[11px] text-on-surface-variant">{vehicle.make} ({vehicle.depot})</p>
+                  </div>
+                ) : (
+                  <p className="text-on-surface-variant">{selectedIncident.vehicleId}</p>
+                )}
               </div>
-              <div>
-                <p className="text-on-surface-variant text-[11px]">Assigned Driver</p>
-                <p className="font-semibold text-on-surface">
-                  {driverById(selectedIncident.driverId)?.name} (ID: {selectedIncident.driverId})
-                </p>
-              </div>
-              <div>
-                <p className="text-on-surface-variant text-[11px]">Safety Officer In Charge</p>
-                <p className="font-medium text-on-surface">{selectedIncident.assignedTo || 'Unassigned'}</p>
-              </div>
-              <div>
-                <p className="text-on-surface-variant text-[11px]">Current Status</p>
-                <p className="font-semibold text-on-surface capitalize">{selectedIncident.status}</p>
+
+              <div className="bg-surface-container-low p-3 rounded-xl space-y-1">
+                <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+                  <User className="w-3 h-3 text-success" /> Driver
+                </span>
+                {driver ? (
+                  <div>
+                    <p className="font-bold text-on-surface">{driver.name}</p>
+                    <p className="text-[11px] text-on-surface-variant">Rating ⭐ {driver.rating} · Violations: {driver.violations}</p>
+                  </div>
+                ) : (
+                  <p className="text-on-surface-variant">{selectedIncident.driverId}</p>
+                )}
               </div>
             </div>
 
-            <div>
-              <h3 className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">Official Summary</h3>
-              <p className="text-xs text-on-surface bg-surface-container-low p-3 rounded-lg leading-relaxed border border-outline-variant/40">
-                {selectedIncident.description}
-              </p>
-            </div>
-
-            {selectedIncident.resolution && (
-              <div>
-                <h3 className="text-xs font-bold text-success uppercase tracking-wider mb-1.5">Resolution Notes</h3>
-                <p className="text-xs text-on-surface bg-success/5 border border-success/20 p-3 rounded-lg leading-relaxed">
-                  {selectedIncident.resolution}
-                </p>
-              </div>
-            )}
-
-            {/* Audit / Action History */}
-            <div>
-              <h3 className="text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Audit & Investigation Trail</h3>
-              <div className="space-y-2 border-l-2 border-outline-variant/80 pl-3 ml-1 text-xs">
+            {/* Action History Timeline */}
+            <div className="bg-surface-container-low p-3.5 rounded-xl space-y-2 text-xs">
+              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+                <Clock className="w-3 h-3 text-on-surface-variant" /> Investigation Timeline
+              </span>
+              <div className="space-y-2 pt-1 border-l-2 border-outline-variant/60 ml-2 pl-3">
                 {selectedIncident.actionHistory.map((act, idx) => (
-                  <div key={idx} className="relative pb-2">
-                    <div className="absolute -left-[19px] top-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-white" />
-                    <p className="font-medium text-on-surface">{act.action}</p>
-                    <p className="text-[10px] text-on-surface-variant">
-                      By {act.by} · {act.timestamp.replace('T', ' ').slice(0, 16)}
+                  <div key={idx} className="relative">
+                    <span className="absolute -left-[17px] top-1.5 w-2 h-2 rounded-full bg-primary" />
+                    <p className="text-[10px] font-mono text-on-surface-variant">
+                      {act.timestamp.replace('T', ' ').slice(11, 16)} · by {act.by}
                     </p>
+                    <p className="text-xs font-medium text-on-surface mt-0.5">{act.action}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Resolution Form if unresolved */}
-            {selectedIncident.status !== 'resolved' && selectedIncident.status !== 'closed' && (
-              <div className="pt-3 border-t border-outline-variant/50 space-y-3">
-                <div>
-                  <label className="text-xs font-semibold text-on-surface block mb-1">
-                    Add Resolution Action / Findings:
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={resolutionInput}
-                    onChange={(e) => setResolutionInput(e.target.value)}
-                    placeholder="Enter corrective action, repair completion notes, or disciplinary resolution..."
-                    className="w-full text-xs p-2.5 bg-surface-container-low border border-outline-variant/60 rounded-lg text-on-surface focus:outline-none focus:border-primary resize-none"
-                  />
-                </div>
-                <div className="flex items-center justify-end gap-2">
+            {/* Resolution Actions / Input */}
+            {selectedIncident.status !== 'resolved' && selectedIncident.status !== 'closed' ? (
+              <div className="p-3.5 bg-surface-container-lowest border border-outline-variant/60 rounded-xl space-y-3">
+                <span className="text-xs font-bold text-on-surface block">
+                  Resolve or Update Incident
+                </span>
+
+                <textarea
+                  value={resolutionInput}
+                  onChange={e => setResolutionInput(e.target.value)}
+                  placeholder="Document resolution notes, root cause, and remediation steps..."
+                  rows={2}
+                  className="w-full bg-surface-container-low border border-outline-variant/60 rounded-lg p-2.5 text-xs text-on-surface outline-none focus:border-primary resize-none"
+                />
+
+                <div className="flex items-center gap-2 justify-end">
                   {selectedIncident.status === 'open' && (
                     <button
                       onClick={() => handleMarkInvestigating(selectedIncident.id)}
-                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors"
+                      className="px-3 py-1.5 border border-outline-variant text-on-surface hover:bg-surface-container rounded-lg text-xs font-semibold transition-colors"
                     >
-                      Start Investigation
+                      Mark Investigating
                     </button>
                   )}
                   <button
                     disabled={!resolutionInput.trim()}
                     onClick={() => handleResolve(selectedIncident.id)}
-                    className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-success text-white hover:bg-success/90 disabled:opacity-50 transition-colors shadow-xs"
+                    className="px-3.5 py-1.5 bg-success text-white rounded-lg text-xs font-semibold hover:bg-success/90 transition-opacity disabled:opacity-50 flex items-center gap-1 shadow-2xs"
                   >
-                    Mark as Resolved
+                    <Check className="w-3.5 h-3.5" />
+                    Mark Resolved
                   </button>
                 </div>
               </div>
+            ) : (
+              <div className="p-3 bg-success/10 border border-success/20 rounded-xl text-xs text-success font-semibold flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4" /> This incident has been resolved and logged in compliance audits.
+              </div>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </DetailDrawer>
     </div>
   )
 }
